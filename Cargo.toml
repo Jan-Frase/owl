@@ -1,0 +1,11 @@
+[package]
+name = "owl"
+version = "0.1.0"
+edition = "2021"
+description = "Chess engine built by me in Rust :)"
+repository = "https://github.com/Jan-Frase/owl"
+license = "MIT OR Apache-2.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
