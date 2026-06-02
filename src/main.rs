@@ -1,3 +1,13 @@
+use crate::uci::UciInterface;
+
+mod simplified_eval;
+mod uci;
+
 fn main() {
-    println!("Hello, world!");
+    start_uci();
+}
+
+fn start_uci() {
+    let uci_interface = UciInterface::new();
+    uci_interface.run();
 }
