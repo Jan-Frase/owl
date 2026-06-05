@@ -2,7 +2,8 @@
 // https://gist.github.com/DOBRO/2592c6dad754ba67e6dcaec8c90165bf
 
 use std::io;
-use std::io::Write;
+use mouse::backend::constants::STARTING_POS;
+use crate::engine::Engine;
 use crate::uci::CommandIncoming::*;
 
 // All commands that the GUI might send the engine.
@@ -19,45 +20,38 @@ enum CommandIncoming {
     Stop,
     // PonderHit,
     Quit,
-    Unknown, // We have recieved some invalid or unsupported command.
+    Perft(String),
+    Unknown(String), // We have recieved some invalid or unsupported command.
 }
 
 impl From<String> for CommandIncoming {
     fn from(value: String) -> Self {
-        match value.trim() {
+        let split_value = value.split_once(" ").unwrap_or((value.as_str(), ""));
+        let command = split_value.0;
+        let options = String::from(split_value.1);
+        match command.trim() {
             "uci" => Uci,
             "isready" => IsReady,
             "ucinewgame" => UciNewGame,
-            "position" => Position(value.strip_prefix("position").unwrap_or("").to_string()),
-            "go" => Go(value.strip_prefix("go").unwrap_or("").to_string()),
+            "position" => Position(options),
+            "go" => Go(options),
             "stop" => Stop,
             "quit" => Quit,
-            _ => Unknown
+            _ => Unknown(value)
         }
     }
 }
 
-// All commands that the engine might send the GUI.
-// Currently, commands that are not supported are commented out.
-enum ComandOutgoing {
-    Id,
-    UciOk,
-    ReadyOk,
-    BestMove,
-    // CopyProtection,
-    // Registration,
-    Info,
-    // Option,
+pub struct UciInterface {
+    engine: Engine,
 }
-
-pub struct UciInterface {}
 
 impl UciInterface {
     pub fn new() -> Self {
-        UciInterface{}
+        UciInterface{ engine: Engine::new() }
     }
 
-    pub fn run(&self,) {
+    pub fn run(&mut self) {
         loop {
             // This blocks until input arrives.
             let mut line = String::new();
@@ -70,12 +64,13 @@ impl UciInterface {
             match command {
                 Uci => self.uci(),
                 IsReady => self.is_ready(),
-                UciNewGame => {}
-                Position(fen_and_moves) => {}
-                Go(cmd) => {}
-                Stop => {}
-                Quit => {}
-                Unknown => {}
+                UciNewGame => self.uci_new_game(),
+                Position(fen_and_moves) => self.position(fen_and_moves.as_str()),
+                Go(cmd) => self.go(cmd.as_str()),
+                Stop => self.stop(),
+                Quit => break,
+                Perft(cmd) => self.perft(cmd.as_str()),
+                Unknown(line) => println!("Unknown: {}", line),
             }
         }
     }
@@ -88,5 +83,43 @@ impl UciInterface {
 
     fn is_ready(&self) {
         println!("readyok")
+    }
+
+    fn uci_new_game(&mut self) {
+        self.engine = Engine::new();
+        println!("readyok");
+    }
+
+    fn position(&mut self, mut fen_and_moves: &str) {
+        if fen_and_moves.eq("startpos") {
+            fen_and_moves = STARTING_POS;
+        } else {
+            fen_and_moves = fen_and_moves.strip_prefix("fen").unwrap();
+        }
+
+        let split = fen_and_moves.split_once("moves").unwrap_or((fen_and_moves, ""));
+        let fen = split.0;
+        let moves = split.1;
+
+        self.engine = Engine::from_fen_and_moves(fen, moves.split_whitespace());
+    }
+
+    fn go(&mut self, cmd: &str) {
+        let moove = self.engine.search();
+        println!("bestmove {}", moove.to_string())
+    }
+
+    fn stop(&mut self) {
+
+    }
+
+    fn perft(&mut self, cmd: &str) {
+        let depth: i32 = match cmd.parse::<i32>() {
+            Ok(value) => value,
+            Err(_) => {
+                println!("Error: depth must be an integer.");
+                return;
+            }
+        };
     }
 }

@@ -5,7 +5,7 @@ version = 4
 [[package]]
 name = "mouse"
 version = "0.1.0"
-source = "git+https://github.com/Jan-Frase/mouse.git#d4da0a8c8d76488dc1146eb97ee1241e99500fbe"
+source = "git+https://github.com/Jan-Frase/mouse.git#cfec6aee5700495bb0f4ef122ca759d0428cd71f"
 
 [[package]]
 name = "owl"
