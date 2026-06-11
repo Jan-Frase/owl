@@ -94,7 +94,7 @@ impl UciInterface {
     }
 
     fn position(&mut self, mut fen_and_moves: &str) {
-        if fen_and_moves.eq("startpos") {
+        if fen_and_moves.trim().eq("startpos") {
             fen_and_moves = STARTING_POS;
         } else {
             fen_and_moves = fen_and_moves.strip_prefix("fen").unwrap();

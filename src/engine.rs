@@ -36,10 +36,6 @@ impl Engine {
         }
     }
 
-    pub fn from_fen(fen: &str) -> Engine {
-        let state = State::new_from_fen(&fen);
-        Self::new(state)
-    }
 
     pub fn from_fen_and_moves(fen: &str, moves: SplitWhitespace) -> Engine {
         let mut state = State::new_from_fen(&fen);
@@ -73,15 +69,15 @@ impl Engine {
             // Print an info string to the gui.
             println!("info depth {} nodes {} score {}", depth, self.stats.nodes, eval);
 
-            let search_took = time_search.elapsed();
-            let time_left = time_limit - time_beginning.elapsed();
-
             // Return if we have no more time...
-            if time_left < Duration::ZERO { break; }
+            let time_elapsed = time_beginning.elapsed();
+            if time_limit <= time_elapsed { break; }
 
-            // ... or if this iteration took longer than the time left,
+            let search_took = time_search.elapsed();
+            let time_left = time_limit - time_elapsed;
+            // ... or if this iteration * 15 took longer than the time left,
             // as that usually means that the next iteration will not complete in time.
-            if search_took > time_left { break; }
+            if (search_took * 15) > time_left { break; }
         }
 
         self.best_move.unwrap()
@@ -90,11 +86,20 @@ impl Engine {
     // Recursive search function.
     // Implements :
     // - minimax
+    // TODO: Next steps:
+    // - testing via crucible
+    // - draw by repetition and 50 move rule
+    // - alpha-beta pruning
     fn search(&mut self, depth: i32, sply: i32) -> i32 {
         if depth == 0 { return evaluate_relative(&self.state) };
 
-        let mut best_score = i32::MIN;
-        let moves = moves(&mut self.state);
+        let mut max_score = i32::MIN;
+        let moves = self.state.gen_moves();
+
+        // If we can't move, it is either a stalemate or a checkmate.
+        if moves.is_empty() {
+            return if self.state.is_in_check() { i32::MAX } else { 0 }
+        }
 
         for mve in moves {
             self.stats.nodes += 1;
@@ -103,14 +108,14 @@ impl Engine {
             self.state = self.state.make_move(mve);
             let score = -self.search(depth - 1, sply + 1);
             self.state = old_state;
-            if score > best_score {
-                best_score = score;
+            if score > max_score {
+                max_score = score;
                 if sply == 0 {
                     self.best_move = Some(mve);
                 }
             }
         }
 
-        best_score
+        max_score
     }
 }

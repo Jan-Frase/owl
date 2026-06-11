@@ -3,7 +3,7 @@
 
 use mouse::backend::constants::SQUARES_AMOUNT;
 use mouse::bitboard::BitBoard;
-use mouse::piece::{Side, ALL_PIECES};
+use mouse::piece::{Side, ALL_PIECES, ALL_SIDES};
 use mouse::piece::Piece::{Pawn, Bishop, Knight, Queen, Rook, King};
 use mouse::State;
 
@@ -122,7 +122,7 @@ pub fn evaluate_for_white(state: &State) -> i32 {
 
     // 2. Every side that has a queen has additionally no other major pieces or one minor piece maximum.
     let mut sides_with_queen_have_little_material = true;
-    for side in Side::get_all_colors() {
+    for side in ALL_SIDES {
         let queen_bb = bb_mgr.get_colored_piece_bb(Queen, side);
         if queen_bb.is_empty(){
             continue;
