@@ -3,6 +3,7 @@
 
 use std::io;
 use std::str::FromStr;
+use std::time::Duration;
 use mouse::backend::constants::STARTING_POS;
 use mouse::piece::Side;
 use crate::engine::Engine;
@@ -50,7 +51,7 @@ pub struct UciInterface {
 
 impl UciInterface {
     pub fn new() -> Self {
-        UciInterface{ engine: Engine::new() }
+        UciInterface{ engine: Engine::from_default_pos() }
     }
 
     pub fn run(&mut self) {
@@ -88,7 +89,7 @@ impl UciInterface {
     }
 
     fn uci_new_game(&mut self) {
-        self.engine = Engine::new();
+        self.engine = Engine::from_default_pos();
         println!("readyok");
     }
 
@@ -147,9 +148,10 @@ impl UciInterface {
             
             time_limit = our_time / movestogo + our_inc;
         }
+        let time_limit = Duration::from_millis(time_limit as u64);
        
         // Start search
-        let moove = self.engine.search_root(time_limit);
+        let moove = self.engine.search_start(time_limit);
         println!("bestmove {}", moove.to_string())
     }
 

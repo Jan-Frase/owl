@@ -2,25 +2,43 @@ use mouse::backend::constants::STARTING_POS;
 use mouse::moove::Moove;
 use mouse::{State, moves};
 use std::str::SplitWhitespace;
+use std::time::Duration;
+use crate::simplified_eval::evaluate_relative;
 
 pub struct Engine {
     pub state: State,
+    best_move: Option<Moove>,
+    stats: SearchStats,
 }
 
-// Various constructors
+struct SearchStats {
+    nodes: i32,
+}
+
+impl Default for SearchStats {
+    fn default() -> Self {
+        Self { nodes: 0 }
+    }
+}
+
+// Various constructors and some house-keeping.
 impl Engine {
-    pub fn new() -> Engine {
+    pub fn from_default_pos() -> Engine {
         let state = State::new_from_fen(STARTING_POS);
-        Engine { state }
+        Self::new(state)
     }
 
-    pub fn from_state(state: State) -> Engine {
-        Engine { state }
+    pub fn new(state: State) -> Engine {
+        Engine {
+            state,
+            best_move: None,
+            stats: SearchStats { nodes: 0 }
+        }
     }
 
     pub fn from_fen(fen: &str) -> Engine {
         let state = State::new_from_fen(&fen);
-        Engine { state }
+        Self::new(state)
     }
 
     pub fn from_fen_and_moves(fen: &str, moves: SplitWhitespace) -> Engine {
@@ -31,14 +49,68 @@ impl Engine {
             state = state.make_move(moove);
         }
 
-        Engine { state }
+        Self::new(state)
+    }
+
+    fn reset_for_new_search(&mut self) {
+        self.best_move = None;
+        self.stats = SearchStats::default()
     }
 }
 
 
+// The core of the engine.
 impl Engine {
-    pub fn search_root(&mut self, time_limit: u32) -> Moove {
+    pub fn search_start(&mut self, time_limit: Duration) -> Moove {
+        let time_beginning = std::time::Instant::now();
+        self.reset_for_new_search();
+
+        // Iterative deepening.
+        for depth in 1..=64 {
+            let time_search = std::time::Instant::now();
+            // Run the actual search!
+            let eval = self.search(depth, 0);
+            // Print an info string to the gui.
+            println!("info depth {} nodes {} score {}", depth, self.stats.nodes, eval);
+
+            let search_took = time_search.elapsed();
+            let time_left = time_limit - time_beginning.elapsed();
+
+            // Return if we have no more time...
+            if time_left < Duration::ZERO { break; }
+
+            // ... or if this iteration took longer than the time left,
+            // as that usually means that the next iteration will not complete in time.
+            if search_took > time_left { break; }
+        }
+
+        self.best_move.unwrap()
+    }
+
+    // Recursive search function.
+    // Implements :
+    // - minimax
+    fn search(&mut self, depth: i32, sply: i32) -> i32 {
+        if depth == 0 { return evaluate_relative(&self.state) };
+
+        let mut best_score = i32::MIN;
         let moves = moves(&mut self.state);
-        moves[0]
+
+        for mve in moves {
+            self.stats.nodes += 1;
+            // TODO: prolly better to implement unmake move eh.
+            let old_state = self.state.clone();
+            self.state = self.state.make_move(mve);
+            let score = -self.search(depth - 1, sply + 1);
+            self.state = old_state;
+            if score > best_score {
+                best_score = score;
+                if sply == 0 {
+                    self.best_move = Some(mve);
+                }
+            }
+        }
+
+        best_score
     }
 }
