@@ -1,48 +1,43 @@
-use std::str::SplitWhitespace;
-use mouse::moove::Moove;
-use mouse::{moves, State};
 use mouse::backend::constants::STARTING_POS;
+use mouse::moove::Moove;
+use mouse::{State, moves};
+use std::str::SplitWhitespace;
 
 pub struct Engine {
-    state: State
-
+    pub state: State,
 }
 
+// Various constructors
 impl Engine {
     pub fn new() -> Engine {
         let state = State::new_from_fen(STARTING_POS);
-        Engine {
-            state
-        }
+        Engine { state }
     }
 
     pub fn from_state(state: State) -> Engine {
-        Engine {
-            state
-        }
+        Engine { state }
     }
 
     pub fn from_fen(fen: &str) -> Engine {
         let state = State::new_from_fen(&fen);
-        Engine {
-            state
-        }
+        Engine { state }
     }
 
-    pub fn from_fen_and_moves(fen: &str, mooves: SplitWhitespace) -> Engine {
+    pub fn from_fen_and_moves(fen: &str, moves: SplitWhitespace) -> Engine {
         let mut state = State::new_from_fen(&fen);
 
-        for move_str in mooves {
+        for move_str in moves {
             let moove = Moove::from(move_str);
             state = state.make_move(moove);
         }
 
-        Engine {
-            state
-        }
+        Engine { state }
     }
+}
 
-    pub fn search(&mut self) -> Moove {
+
+impl Engine {
+    pub fn search_root(&mut self, time_limit: u32) -> Moove {
         let moves = moves(&mut self.state);
         moves[0]
     }

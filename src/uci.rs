@@ -2,7 +2,9 @@
 // https://gist.github.com/DOBRO/2592c6dad754ba67e6dcaec8c90165bf
 
 use std::io;
+use std::str::FromStr;
 use mouse::backend::constants::STARTING_POS;
+use mouse::piece::Side;
 use crate::engine::Engine;
 use crate::uci::CommandIncoming::*;
 
@@ -105,7 +107,49 @@ impl UciInterface {
     }
 
     fn go(&mut self, cmd: &str) {
-        let moove = self.engine.search();
+        // Parse options
+        // I do not support 'searchmoves', 'ponder', 'depth', 'nodes', 'mate', or 'infinite'.
+        // That leaves us with 'wtime', 'btime', 'winc', 'binc' 'movestogo' and 'movetime'.
+        let mut wtime: Option<u32> = None;
+        let mut btime: Option<u32> = None;
+        let mut winc: Option<u32> = None;
+        let mut binc: Option<u32> = None;
+        let mut movestogo: Option<u32> = None;
+        let mut movetime: Option<u32> = None;
+
+        let mut iter = cmd.split_whitespace();
+        while let Some(option) = iter.next() {
+            let x = iter.next().unwrap();
+            let x = u32::from_str(x).unwrap();
+            match option {
+                "wtime" => wtime = Some(x),
+                "btime" => btime = Some(x),
+                "winc" => winc = Some(x),
+                "binc" => binc = Some(x),
+                "movestogo" => movestogo = Some(x),
+                "movetime" => movetime = Some(x),
+                _ => println!("Error: unsupported option: {}", option),
+            }
+        }
+        
+        let mut time_limit = movetime.unwrap_or(0);
+        
+        if movetime.is_none() {
+            // Use the basic Time Management formula from:
+            // https://www.chessprogramming.org/Time_Management
+            // Either using the given movestogo or the default value of 20.
+            let movestogo = movestogo.unwrap_or(20);
+
+            let (our_time, our_inc) = match self.engine.state.active_side {
+                Side::White => (wtime.unwrap(), winc.unwrap()),
+                Side::Black => (btime.unwrap(), binc.unwrap()),
+            };
+            
+            time_limit = our_time / movestogo + our_inc;
+        }
+       
+        // Start search
+        let moove = self.engine.search_root(time_limit);
         println!("bestmove {}", moove.to_string())
     }
 
