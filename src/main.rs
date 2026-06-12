@@ -1,8 +1,8 @@
 use crate::uci::UciInterface;
 
+mod engine;
 mod simplified_eval;
 mod uci;
-mod engine;
 
 fn main() {
     start_uci();

@@ -1,13 +1,13 @@
 // UCI Interface implementation based on:
 // https://gist.github.com/DOBRO/2592c6dad754ba67e6dcaec8c90165bf
 
+use crate::engine::Engine;
+use crate::uci::CommandIncoming::*;
+use mouse::backend::constants::STARTING_POS;
+use mouse::piece::Side;
 use std::io;
 use std::str::FromStr;
 use std::time::Duration;
-use mouse::backend::constants::STARTING_POS;
-use mouse::piece::Side;
-use crate::engine::Engine;
-use crate::uci::CommandIncoming::*;
 
 // All commands that the GUI might send the engine.
 // Currently, commands that are not supported are commented out.
@@ -40,7 +40,7 @@ impl From<String> for CommandIncoming {
             "go" => Go(options),
             "stop" => Stop,
             "quit" => Quit,
-            _ => Unknown(value)
+            _ => Unknown(value),
         }
     }
 }
@@ -51,7 +51,9 @@ pub struct UciInterface {
 
 impl UciInterface {
     pub fn new() -> Self {
-        UciInterface{ engine: Engine::from_default_pos() }
+        UciInterface {
+            engine: Engine::from_default_pos(),
+        }
     }
 
     pub fn run(&mut self) {
@@ -78,7 +80,7 @@ impl UciInterface {
         }
     }
 
-    fn uci(&self, ) {
+    fn uci(&self) {
         println!("id name MouseAndOwl");
         println!("id author Jan Frase");
         println!("uciok")
@@ -100,7 +102,9 @@ impl UciInterface {
             fen_and_moves = fen_and_moves.strip_prefix("fen").unwrap();
         }
 
-        let split = fen_and_moves.split_once("moves").unwrap_or((fen_and_moves, ""));
+        let split = fen_and_moves
+            .split_once("moves")
+            .unwrap_or((fen_and_moves, ""));
         let fen = split.0;
         let moves = split.1;
 
@@ -132,9 +136,9 @@ impl UciInterface {
                 _ => println!("Error: unsupported option: {}", option),
             }
         }
-        
+
         let mut time_limit = movetime.unwrap_or(0);
-        
+
         if movetime.is_none() {
             // Use the basic Time Management formula from:
             // https://www.chessprogramming.org/Time_Management
@@ -145,19 +149,17 @@ impl UciInterface {
                 Side::White => (wtime.unwrap(), winc.unwrap()),
                 Side::Black => (btime.unwrap(), binc.unwrap()),
             };
-            
+
             time_limit = our_time / movestogo + our_inc;
         }
         let time_limit = Duration::from_millis(time_limit as u64);
-       
+
         // Start search
         let moove = self.engine.search_start(time_limit);
         println!("bestmove {}", moove.to_string())
     }
 
-    fn stop(&mut self) {
-
-    }
+    fn stop(&mut self) {}
 
     fn perft(&mut self, cmd: &str) {
         let depth: i32 = match cmd.parse::<i32>() {
