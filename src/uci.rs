@@ -95,20 +95,20 @@ impl UciInterface {
         println!("readyok");
     }
 
-    fn position(&mut self, mut fen_and_moves: &str) {
-        if fen_and_moves.trim().eq("startpos") {
-            fen_and_moves = STARTING_POS;
-        } else {
-            fen_and_moves = fen_and_moves.strip_prefix("fen").unwrap();
-        }
+    fn position(&mut self, fen_and_moves: &str) {
+        let mut iter = fen_and_moves.split_whitespace();
 
-        let split = fen_and_moves
-            .split_once("moves")
-            .unwrap_or((fen_and_moves, ""));
-        let fen = split.0;
-        let moves = split.1;
+        let fen = match iter.next().unwrap() {
+            "startpos" => String::from(STARTING_POS),
+            // fen is all strings concatenated until we hit `moves` or the string ends.
+            "fen" => iter.by_ref().take(6).collect::<Vec<&str>>().join(" "),
+            _ => panic!("Error: fen must be 'startpos' or 'fen'."),
+        };
 
-        self.engine = Engine::from_fen_and_moves(fen, moves.split_whitespace());
+        // Skip the 'moves' word if it exists.
+        iter.next();
+
+        self.engine = Engine::from_fen_and_moves(fen.as_str(), iter);
     }
 
     fn go(&mut self, cmd: &str) {
