@@ -76,7 +76,6 @@ impl Engine {
             search_data_per_depth: SearchDataPerDepth::default(),
         }
     }
-
 }
 
 // The core of the engine.
@@ -130,7 +129,7 @@ impl Engine {
             }
         }
 
-        println!("time allocated: {:?}, time taken: {:?}", self.time_limit, self.start_time.elapsed());
+        // println!("time allocated: {:?}, time taken: {:?}", self.time_limit, self.start_time.elapsed());
 
         // If no iteration finished just return a random move...
         self.best_move.unwrap_or(self.state.gen_moves()[0])
@@ -237,6 +236,7 @@ impl Engine {
 
         // Continue normal q-search.
         for mve in capture_moves {
+            self.stats.nodes += 1;
             self.stats.q_nodes += 1;
             // TODO: prolly better to implement unmake move eh.
             // Enter the new position and push it onto the repetition stack.

@@ -60,7 +60,7 @@
     },
     "config_name": "config.json",
     "output": 0,
-    "seed": 7877913387826076448,
+    "seed": 2802409837964839465,
     "variant": 0,
     "type": 0,
     "gauntlet_seeds": 1,
@@ -88,6 +88,26 @@
     },
     "engines": [
         {
+            "name": "06",
+            "dir": "",
+            "cmd": "./06",
+            "args": "",
+            "restart": false,
+            "options": [],
+            "limit": {
+                "tc": {
+                    "increment": 100,
+                    "fixed_time": 0,
+                    "time": 10000,
+                    "moves": 0,
+                    "timemargin": 0
+                },
+                "nodes": 0,
+                "plies": 0
+            },
+            "variant": 0
+        },
+        {
             "name": "05",
             "dir": "",
             "cmd": "./05",
@@ -106,38 +126,18 @@
                 "plies": 0
             },
             "variant": 0
-        },
-        {
-            "name": "04",
-            "dir": "",
-            "cmd": "./04",
-            "args": "",
-            "restart": false,
-            "options": [],
-            "limit": {
-                "tc": {
-                    "increment": 100,
-                    "fixed_time": 0,
-                    "time": 10000,
-                    "moves": 0,
-                    "timemargin": 0
-                },
-                "nodes": 0,
-                "plies": 0
-            },
-            "variant": 0
         }
     ],
     "stats": {
-        "05 vs 04": {
-            "wins": 27,
-            "losses": 7,
-            "draws": 4,
-            "penta_WW": 10,
-            "penta_WD": 1,
-            "penta_WL": 6,
-            "penta_DD": 1,
-            "penta_LD": 1,
+        "06 vs 05": {
+            "wins": 23,
+            "losses": 13,
+            "draws": 2,
+            "penta_WW": 4,
+            "penta_WD": 2,
+            "penta_WL": 13,
+            "penta_DD": 0,
+            "penta_LD": 0,
             "penta_LL": 0
         }
     }
