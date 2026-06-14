@@ -142,8 +142,8 @@ impl UciInterface {
         if movetime.is_none() {
             // Use the basic Time Management formula from:
             // https://www.chessprogramming.org/Time_Management
-            // Either using the given movestogo or the default value of 20.
-            let movestogo = movestogo.unwrap_or(20);
+            // Either using the given movestogo or the default value of 25.
+            let movestogo = movestogo.unwrap_or(25);
 
             let (our_time, our_inc) = match self.engine.state.active_side {
                 Side::White => (wtime.unwrap(), winc.unwrap()),

@@ -6,25 +6,42 @@ use mouse::piece::Piece::{Bishop, Knight};
 use std::str::SplitWhitespace;
 use std::time::Duration;
 
-const INF: i32 = 1_000_000;
+const INF: i32 = 10_000_000;
 const MATE_SCORE: i32 = 100_000;
 const DRAW_SCORE: i32 = 0;
+// Checking time limit every 1024 nodes.
+const TIME_OUT_CHECK_FREQUENCY: u64 = 1024;
 
 pub struct Engine {
     pub state: State,
     best_move: Option<Moove>,
-    desired_search_depth: i32,
     stats: SearchStats,
     repetition_stack: Vec<u64>,
+    time_limit: Duration,
+    start_time: std::time::Instant,
+    search_data_per_depth: SearchDataPerDepth
+}
+
+struct SearchDataPerDepth {
+    desired_search_depth: i32,
+    best_move: Option<Moove>,
+    is_time_over: bool,
+}
+
+impl Default for SearchDataPerDepth {
+    fn default() -> Self {
+        Self { desired_search_depth: 0, best_move: None, is_time_over: false }
+    }
 }
 
 struct SearchStats {
     nodes: u64,
+    q_nodes: u64,
 }
 
 impl Default for SearchStats {
     fn default() -> Self {
-        Self { nodes: 0 }
+        Self { nodes: 0, q_nodes: 0 }
     }
 }
 
@@ -52,64 +69,89 @@ impl Engine {
         Engine {
             state,
             best_move: None,
-            desired_search_depth: 0,
             stats: SearchStats::default(),
             repetition_stack,
+            time_limit: Duration::from_secs(0),
+            start_time: std::time::Instant::now(),
+            search_data_per_depth: SearchDataPerDepth::default(),
         }
     }
 
-    fn reset_for_new_search(&mut self) {
-        self.best_move = None;
-        self.stats = SearchStats::default()
-    }
 }
 
 // The core of the engine.
 impl Engine {
     pub fn search_start(&mut self, time_limit: Duration) -> Moove {
-        let time_beginning = std::time::Instant::now();
+        self.start_time = std::time::Instant::now();
+        self.time_limit = time_limit;
         self.reset_for_new_search();
 
         // Iterative deepening.
         for depth in 1..=64 {
-            self.desired_search_depth = depth;
-            let time_search = std::time::Instant::now();
+            self.search_data_per_depth = SearchDataPerDepth {
+                desired_search_depth: depth,
+                best_move: None,
+                is_time_over: false,
+            };
             // Run the actual search!
+            let search_start = std::time::Instant::now();
             let eval = self.search(0, -INF, INF);
+            let search_duration = search_start.elapsed();
 
-            // Print an info string to the gui.
-            println!(
-                "info depth {} nodes {} score {}",
-                depth, self.stats.nodes, eval
-            );
-
-            // Return if we have no more time...
-            let time_elapsed = time_beginning.elapsed();
-            if time_limit <= time_elapsed {
+            // If the search did not properly finish...
+            if self.search_data_per_depth.is_time_over {
                 break;
             }
 
-            let search_took = time_search.elapsed();
-            let time_left = time_limit - time_elapsed;
-            // ... or if this iteration * 15 took longer than the time left,
-            // as that usually means that the next iteration will not complete in time.
-            if (search_took * 15) > time_left {
+            // Print an info string to the gui.
+            println!(
+                "info depth {} nodes {} qnodes {} score {}, took {:?}",
+                depth, self.stats.nodes, self.stats.q_nodes, eval, search_duration
+            );
+
+            // Update the best move if the iteration finished before running out of time.
+            self.best_move = self.search_data_per_depth.best_move;
+
+            // Return if the current depth * 5 took more than we have remaining...
+            let time_remaining = self.time_remaining();
+            match time_remaining {
+                None => {break;}
+                Some(time) => {
+                    if search_duration > time {
+                        break;
+                    }
+                }
+            }
+
+
+            // Return if we have no more time...
+            if self.is_out_of_time() {
                 break;
             }
         }
 
-        self.best_move.unwrap()
+        println!("time allocated: {:?}, time taken: {:?}", self.time_limit, self.start_time.elapsed());
+
+        // If no iteration finished just return a random move...
+        self.best_move.unwrap_or(self.state.gen_moves()[0])
     }
 
     // Recursive search function.
     // Implements:
     // - minimax in negation max form
     // - alpha-beta pruning
+    // - draw by repetition, insufficient material and 50 move rule
+    // - Proper TC?
 
     // TODO: Next steps:
-    // - draw by repetition, insufficient material and 50 move rule
-    // - Quiescence search.
+    // - Quiescence search
+    // - Basic Move ordering MVV-LVA
+    // - TT Table
     fn search(&mut self, current_depth: i32, mut alpha: i32, beta: i32) -> i32 {
+        if self.depth_out_of_time() {
+            return DRAW_SCORE;
+        }
+
         // Check for draw by: repetition, insufficient material and 50 move rule.
         if self.is_drawn() {
             return DRAW_SCORE;
@@ -128,9 +170,9 @@ impl Engine {
             };
         }
 
-        // --- If it isn't already over, evaluate the position whenever we reach a leaf node. ---
-        if current_depth == self.desired_search_depth {
-            return evaluate_relative(&self.state);
+        // --- Evaluate the position whenever we reach a leaf node. ---
+        if current_depth == self.search_data_per_depth.desired_search_depth {
+            return self.quiescence_search(alpha, beta);
         };
 
         let mut max_score = -INF;
@@ -153,7 +195,7 @@ impl Engine {
                 max_score = score;
                 // Only keep the best move if it is the first move of the search.
                 if current_depth == 0 {
-                    self.best_move = Some(mve);
+                    self.search_data_per_depth.best_move = Some(mve);
                 }
             }
 
@@ -171,6 +213,73 @@ impl Engine {
         max_score
     }
 
+    fn quiescence_search(&mut self, mut alpha : i32, beta: i32) -> i32 {
+        if self.depth_out_of_time() {
+            return DRAW_SCORE;
+        }
+
+        let capture_moves = self.state.gen_attacks();
+
+        // If there are no more captures, finally evaluate the position.
+        if capture_moves.is_empty() {
+            return evaluate_relative(&self.state);
+        }
+
+        // Stand-pat pruning
+        // https://www.chessprogramming.org/Quiescence_Search#Standing_Pat
+        let mut max_score = evaluate_relative(&self.state);
+        if max_score >= beta {
+            return max_score;
+        }
+        if max_score > alpha {
+            alpha = max_score;
+        }
+
+        // Continue normal q-search.
+        for mve in capture_moves {
+            self.stats.q_nodes += 1;
+            // TODO: prolly better to implement unmake move eh.
+            // Enter the new position and push it onto the repetition stack.
+            let old_state = self.state.clone();
+            self.state = self.state.make_move(mve);
+
+            // Step deeper into the search.
+            let score = -self.quiescence_search(-beta, -alpha);
+            self.state = old_state;
+
+            // Update the max score.
+            if score > max_score {
+                max_score = score;
+            }
+            // If the score is better than the alpha value, update it.
+            if score > alpha {
+                alpha = score;
+            }
+
+            // Alpha-beta cutoff.
+            if score >= beta {
+                return max_score;
+            }
+        }
+
+        max_score
+    }
+}
+
+// Various helper functions.
+impl Engine {
+    fn reset_for_new_search(&mut self) {
+        self.best_move = None;
+        self.stats = SearchStats::default()
+    }
+
+    fn is_out_of_time(&self) -> bool {
+        self.start_time.elapsed() > self.time_limit
+    }
+
+    fn time_remaining(&self) -> Option<Duration> {
+        self.time_limit.checked_sub(self.start_time.elapsed())
+    }
     fn is_drawn(&self) -> bool {
         // --- Check for the 50-move-rule. ---
         if self.state.half_move_clock >= 100 {
@@ -212,6 +321,19 @@ impl Engine {
             }
         }
 
+        false
+    }
+
+    fn depth_out_of_time(&mut self) -> bool {
+        // If we are out of time, return 0.
+        if self.search_data_per_depth.is_time_over {
+            return true;
+        }
+        // Every 1024 nodes, check if we are out of time.
+        if self.stats.nodes % TIME_OUT_CHECK_FREQUENCY == 0 && self.is_out_of_time() {
+            self.search_data_per_depth.is_time_over = true;
+            return true;
+        }
         false
     }
 }

@@ -2,5 +2,6 @@ version, update, wins, losses, draws
 01, added minimax, 415, 0, 85
 02, added mate detection, 150, 74, 276
 03, added alpha beta pruning, 298, 29, 173
-04, added draw detection for 50 move rule, repetition and some cases of insufficent material, 
+04, added draw detection for 50 move rule - repetition and some cases of insufficent material, 209, 128, 163
+05, added better time control and quisence search
 
