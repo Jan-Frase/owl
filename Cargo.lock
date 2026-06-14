@@ -138,7 +138,7 @@ checksum = "88904434abc2901f197fe8cc55f0445e7ded921dba5911dad2e2b39b48e663c4"
 [[package]]
 name = "mouse"
 version = "0.1.0"
-source = "git+https://github.com/Jan-Frase/mouse.git#590e2b7147620a3dc3a5ea90ac27a91c45bcd894"
+source = "git+https://github.com/Jan-Frase/mouse.git#4c13a0ad356fe29ed10181b4d4321ec67560ba8c"
 dependencies = [
  "rand",
 ]

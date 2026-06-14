@@ -1,291 +1,260 @@
 diff --git a/src/engine.rs b/src/engine.rs
-index 0e2e20a..b4ab512 100644
+index 71de71a..afa1571 100644
 --- a/src/engine.rs
 +++ b/src/engine.rs
-@@ -6,25 +6,42 @@ use mouse::piece::Piece::{Bishop, Knight};
+@@ -5,6 +5,7 @@ use mouse::moove::Moove;
+ use mouse::piece::Piece::{Bishop, Knight};
  use std::str::SplitWhitespace;
  use std::time::Duration;
++use crate::move_list::MoveList;
  
--const INF: i32 = 1_000_000;
-+const INF: i32 = 10_000_000;
+ const INF: i32 = 10_000_000;
  const MATE_SCORE: i32 = 100_000;
- const DRAW_SCORE: i32 = 0;
-+// Checking time limit every 1024 nodes.
-+const TIME_OUT_CHECK_FREQUENCY: u64 = 1024;
- 
- pub struct Engine {
-     pub state: State,
-     best_move: Option<Moove>,
--    desired_search_depth: i32,
-     stats: SearchStats,
-     repetition_stack: Vec<u64>,
-+    time_limit: Duration,
-+    start_time: std::time::Instant,
-+    search_data_per_depth: SearchDataPerDepth
-+}
-+
-+struct SearchDataPerDepth {
-+    desired_search_depth: i32,
-+    best_move: Option<Moove>,
-+    is_time_over: bool,
-+}
-+
-+impl Default for SearchDataPerDepth {
-+    fn default() -> Self {
-+        Self { desired_search_depth: 0, best_move: None, is_time_over: false }
-+    }
- }
- 
- struct SearchStats {
-     nodes: u64,
-+    q_nodes: u64,
- }
- 
- impl Default for SearchStats {
-     fn default() -> Self {
--        Self { nodes: 0 }
-+        Self { nodes: 0, q_nodes: 0 }
-     }
- }
- 
-@@ -52,64 +69,89 @@ impl Engine {
-         Engine {
-             state,
-             best_move: None,
--            desired_search_depth: 0,
-             stats: SearchStats::default(),
-             repetition_stack,
-+            time_limit: Duration::from_secs(0),
-+            start_time: std::time::Instant::now(),
-+            search_data_per_depth: SearchDataPerDepth::default(),
-         }
-     }
- 
--    fn reset_for_new_search(&mut self) {
--        self.best_move = None;
--        self.stats = SearchStats::default()
--    }
- }
- 
- // The core of the engine.
- impl Engine {
-     pub fn search_start(&mut self, time_limit: Duration) -> Moove {
--        let time_beginning = std::time::Instant::now();
-+        self.start_time = std::time::Instant::now();
-+        self.time_limit = time_limit;
-         self.reset_for_new_search();
- 
-         // Iterative deepening.
-         for depth in 1..=64 {
--            self.desired_search_depth = depth;
--            let time_search = std::time::Instant::now();
-+            self.search_data_per_depth = SearchDataPerDepth {
-+                desired_search_depth: depth,
-+                best_move: None,
-+                is_time_over: false,
-+            };
-             // Run the actual search!
-+            let search_start = std::time::Instant::now();
-             let eval = self.search(0, -INF, INF);
-+            let search_duration = search_start.elapsed();
-+
-+            // If the search did not properly finish...
-+            if self.search_data_per_depth.is_time_over {
-+                break;
-+            }
- 
-             // Print an info string to the gui.
-             println!(
--                "info depth {} nodes {} score {}",
--                depth, self.stats.nodes, eval
-+                "info depth {} nodes {} qnodes {} score {}, took {:?}",
-+                depth, self.stats.nodes, self.stats.q_nodes, eval, search_duration
-             );
- 
--            // Return if we have no more time...
--            let time_elapsed = time_beginning.elapsed();
--            if time_limit <= time_elapsed {
--                break;
-+            // Update the best move if the iteration finished before running out of time.
-+            self.best_move = self.search_data_per_depth.best_move;
-+
-+            // Return if the current depth * 5 took more than we have remaining...
-+            let time_remaining = self.time_remaining();
-+            match time_remaining {
-+                None => {break;}
-+                Some(time) => {
-+                    if search_duration * 3 > time {
-+                        break;
-+                    }
-+                }
-             }
- 
--            let search_took = time_search.elapsed();
--            let time_left = time_limit - time_elapsed;
--            // ... or if this iteration * 15 took longer than the time left,
--            // as that usually means that the next iteration will not complete in time.
--            if (search_took * 15) > time_left {
-+
-+            // Return if we have no more time...
-+            if self.is_out_of_time() {
-                 break;
-             }
-         }
- 
--        self.best_move.unwrap()
-+        println!("time allocated: {:?}, time taken: {:?}", self.time_limit, self.start_time.elapsed());
-+
-+        // If no iteration finished just return a random move...
-+        self.best_move.unwrap_or(self.state.gen_moves()[0])
-     }
- 
-     // Recursive search function.
-     // Implements:
+@@ -140,10 +141,10 @@ impl Engine {
      // - minimax in negation max form
      // - alpha-beta pruning
-+    // - draw by repetition, insufficient material and 50 move rule
-+    // - Proper TC?
+     // - draw by repetition, insufficient material and 50 move rule
+-    // - Proper TC?
++    // - Time Control after x nodes
++    // - Quiescence search
  
      // TODO: Next steps:
--    // - draw by repetition, insufficient material and 50 move rule
--    // - Quiescence search.
-+    // - Quiescence search
-+    // - Basic Move ordering MVV-LVA
-+    // - TT Table
+-    // - Quiescence search
+     // - Basic Move ordering MVV-LVA
+     // - TT Table
      fn search(&mut self, current_depth: i32, mut alpha: i32, beta: i32) -> i32 {
-+        if self.depth_out_of_time() {
-+            return DRAW_SCORE;
-+        }
-+
-         // Check for draw by: repetition, insufficient material and 50 move rule.
-         if self.is_drawn() {
-             return DRAW_SCORE;
-@@ -128,9 +170,9 @@ impl Engine {
-             };
+@@ -157,10 +158,10 @@ impl Engine {
          }
  
--        // --- If it isn't already over, evaluate the position whenever we reach a leaf node. ---
--        if current_depth == self.desired_search_depth {
--            return evaluate_relative(&self.state);
-+        // --- Evaluate the position whenever we reach a leaf node. ---
-+        if current_depth == self.search_data_per_depth.desired_search_depth {
-+            return -self.quiescence_search(-beta, -alpha);
+         // Gen all legal moves.
+-        let moves = self.state.gen_moves();
++        let move_list = MoveList::new(&self.state);
+ 
+         // If we can't move, it is either a stalemate or a checkmate.
+-        if moves.is_empty() {
++        if move_list.is_empty() {
+             return if self.state.is_in_check() {
+                 // Mates that are further away are better.
+                 -MATE_SCORE + current_depth
+@@ -175,7 +176,7 @@ impl Engine {
          };
  
          let mut max_score = -INF;
-@@ -153,7 +195,7 @@ impl Engine {
-                 max_score = score;
-                 // Only keep the best move if it is the first move of the search.
-                 if current_depth == 0 {
--                    self.best_move = Some(mve);
-+                    self.search_data_per_depth.best_move = Some(mve);
-                 }
-             }
+-        for mve in moves {
++        for mve in move_list {
+             self.stats.nodes += 1;
  
-@@ -171,6 +213,73 @@ impl Engine {
-         max_score
-     }
+             // TODO: prolly better to implement unmake move eh.
+@@ -217,10 +218,10 @@ impl Engine {
+             return DRAW_SCORE;
+         }
  
-+    fn quiescence_search(&mut self, mut alpha : i32, beta: i32) -> i32 {
-+        if self.depth_out_of_time() {
-+            return DRAW_SCORE;
+-        let capture_moves = self.state.gen_attacks();
++        let attack_list = MoveList::new_only_attacks(&self.state);
+ 
+         // If there are no more captures, finally evaluate the position.
+-        if capture_moves.is_empty() {
++        if attack_list.is_empty() {
+             return evaluate_relative(&self.state);
+         }
+ 
+@@ -235,7 +236,7 @@ impl Engine {
+         }
+ 
+         // Continue normal q-search.
+-        for mve in capture_moves {
++        for mve in attack_list {
+             self.stats.nodes += 1;
+             self.stats.q_nodes += 1;
+             // TODO: prolly better to implement unmake move eh.
+diff --git a/src/main.rs b/src/main.rs
+index f9a25ba..6522e3c 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -3,6 +3,7 @@ use crate::uci::UciInterface;
+ mod engine;
+ mod simplified_eval;
+ mod uci;
++mod move_list;
+ 
+ fn main() {
+     start_uci();
+diff --git a/src/move_list.rs b/src/move_list.rs
+index e69de29..e798647 100644
+--- a/src/move_list.rs
++++ b/src/move_list.rs
+@@ -0,0 +1,112 @@
++use mouse::moove::Moove;
++use mouse::piece::Piece::Pawn;
++use mouse::State;
++use crate::simplified_eval::get_piece_value;
++
++const CAPTURE_BONUS: i16 = 1000;
++
++pub struct MoveList {
++    moves: Vec<Moove>,
++    scores: Vec<i16>
++}
++
++impl MoveList {
++    pub fn new(state: &State) -> MoveList {
++        let moves = state.gen_moves();
++        let scores = Self::score_moves(state, &moves);
++
++        MoveList {
++            moves,
++            scores
++        }
++    }
++
++    pub fn new_only_attacks(state: &State) -> MoveList {
++        let moves = state.gen_attacks();
++        let scores = Self::score_moves(state, &moves);
++
++        MoveList {
++            moves,
++            scores
++        }
++    }
++
++    fn score_moves(state: &State, moves: &Vec<Moove>) -> Vec<i16> {
++        let mut scores = Vec::with_capacity(moves.len());
++
++        for mve in moves {
++            scores.push(Self::score_move(state, mve));
 +        }
 +
-+        let capture_moves = self.state.gen_attacks();
++        scores
++    }
 +
-+        // If there are no more captures, finally evaluate the position.
-+        if capture_moves.is_empty() {
-+            return evaluate_relative(&self.state);
-+        }
++    // According to: https://www.chessprogramming.org/Move_Ordering
++    // The ordering of scoring usually goes something like this:
++    // TODO: 1. Hash Move: Is this the best move from a prior search at this position? Would somehow be stored in the TT table.
++    // 2. MVV-LVA: Most Valuable Victim - Least Valuable Aggressor
++    // TODO: 3. Promotions
++    // TODO: 4 and 5. Killer moves?
++    // 6. TODO: History - no idea yet
 +
-+        // Stand-pat pruning
-+        // https://www.chessprogramming.org/Quiescence_Search#Standing_Pat
-+        let mut max_score = evaluate_relative(&self.state);
-+        if max_score >= beta {
-+            return max_score;
-+        }
-+        if max_score > alpha {
-+            alpha = max_score;
-+        }
++    fn score_move(state: &State, mve: &Moove) -> i16 {
++        let score = 0;
 +
-+        // Continue normal q-search.
-+        for mve in capture_moves {
-+            self.stats.q_nodes += 1;
-+            // TODO: prolly better to implement unmake move eh.
-+            // Enter the new position and push it onto the repetition stack.
-+            let old_state = self.state.clone();
-+            self.state = self.state.make_move(mve);
-+
-+            // Step deeper into the search.
-+            let score = -self.quiescence_search(-beta, -alpha);
-+            self.state = old_state;
-+
-+            // Update the max score.
-+            if score > max_score {
-+                max_score = score;
++        // Get attacker and defender.
++        // It's a bit convoluted because of en passant.
++        let attacker = state.bb_mngr.get_piece_at_square(mve.get_from()).unwrap();
++        let defender = match state.irreversible_data.en_passant_square {
++            None => {
++                state.bb_mngr.get_piece_at_square(mve.get_to())
 +            }
-+            // If the score is better than the alpha value, update it.
-+            if score > alpha {
-+                alpha = score;
++            Some(ep_square) => {
++                if attacker == Pawn && mve.get_to() == ep_square {
++                    Some(Pawn)
++                } else {
++                    None
++                }
 +            }
++        };
 +
-+            // Alpha-beta cutoff.
-+            if score >= beta {
-+                return max_score;
++        // MVV - LVA
++        if let Some(defender) = defender {
++            let attacker_value = get_piece_value(attacker) as i16;
++            let defender_value = get_piece_value(defender) as i16;
++            return CAPTURE_BONUS + attacker_value - defender_value;
++        }
++
++        score
++    }
++
++    fn selection_sort_step(&mut self) {
++        let mut best_score = self.scores[0];
++        let mut best_index = 0;
++
++        for i in 1..self.scores.len() {
++            let score = self.scores[i];
++            if score > best_score {
++                best_index = i;
++                best_score = score;
 +            }
 +        }
 +
-+        max_score
++        let end = self.scores.len() - 1;
++        self.scores.swap(end, best_index);
++    }
++
++    pub(crate) fn is_empty(&self) -> bool {
++        self.moves.is_empty()
 +    }
 +}
 +
-+// Various helper functions.
-+impl Engine {
-+    fn reset_for_new_search(&mut self) {
-+        self.best_move = None;
-+        self.stats = SearchStats::default()
-+    }
++impl Iterator for MoveList {
++    type Item = Moove;
 +
-+    fn is_out_of_time(&self) -> bool {
-+        self.start_time.elapsed() > self.time_limit
++    fn next(&mut self) -> Option<Self::Item> {
++        // Runs a single iteration of the selection sort.
++        // This shifts the best move to the end of the list.
++        self.selection_sort_step();
++        // Which we can then pop here :)
++        self.moves.pop()
 +    }
-+
-+    fn time_remaining(&self) -> Option<Duration> {
-+        self.time_limit.checked_sub(self.start_time.elapsed())
-+    }
-     fn is_drawn(&self) -> bool {
-         // --- Check for the 50-move-rule. ---
-         if self.state.half_move_clock >= 100 {
-@@ -214,4 +323,17 @@ impl Engine {
++}
+\ No newline at end of file
+diff --git a/src/simplified_eval.rs b/src/simplified_eval.rs
+index bb2b424..7d88194 100644
+--- a/src/simplified_eval.rs
++++ b/src/simplified_eval.rs
+@@ -5,15 +5,15 @@ use mouse::State;
+ use mouse::backend::constants::SQUARES_AMOUNT;
+ use mouse::bitboard::BitBoard;
+ use mouse::piece::Piece::{Bishop, King, Knight, Pawn, Queen, Rook};
+-use mouse::piece::{ALL_PIECES, ALL_SIDES, Side};
++use mouse::piece::{ALL_PIECES, ALL_SIDES, Side, Piece};
  
-         false
-     }
-+
-+    fn depth_out_of_time(&mut self) -> bool {
-+        // If we are out of time, return 0.
-+        if self.search_data_per_depth.is_time_over {
-+            return true;
-+        }
-+        // Every 1024 nodes, check if we are out of time.
-+        if self.stats.nodes % TIME_OUT_CHECK_FREQUENCY == 0 && self.is_out_of_time() {
-+            self.search_data_per_depth.is_time_over = true;
-+            return true;
-+        }
-+        false
-+    }
+ // Piece Values:
+-const PAWN_VALUE: i32 = 100;
+-const KNIGHT_VALUE: i32 = 320;
+-const BISHOP_VALUE: i32 = 330;
+-const ROOK_VALUE: i32 = 500;
+-const QUEEN_VALUE: i32 = 900;
+-const KING_VALUE: i32 = 10000;
++pub const PAWN_VALUE: i32 = 100;
++pub const KNIGHT_VALUE: i32 = 320;
++pub const BISHOP_VALUE: i32 = 330;
++pub const ROOK_VALUE: i32 = 500;
++pub const QUEEN_VALUE: i32 = 900;
++pub const KING_VALUE: i32 = 10000;
+ 
+ // Piece-Square-Tables:
+ // Do note that these tables are for black and need to be mirrored for white.
+@@ -105,14 +105,7 @@ pub fn evaluate_for_white(state: &State) -> i32 {
+ 
+     // Then, sum up the piece values.
+     for piece in ALL_PIECES {
+-        let piece_value = match piece {
+-            Pawn => PAWN_VALUE,
+-            Knight => KNIGHT_VALUE,
+-            Bishop => BISHOP_VALUE,
+-            Rook => ROOK_VALUE,
+-            Queen => QUEEN_VALUE,
+-            King => KING_VALUE,
+-        };
++        let piece_value = get_piece_value(piece);
+ 
+         let white_piece_count = bb_mgr
+             .get_colored_piece_bb(piece, Side::White)
+@@ -158,6 +151,17 @@ pub fn evaluate_for_white(state: &State) -> i32 {
+     eval
  }
-diff --git a/src/uci.rs b/src/uci.rs
-index be76b0a..e723de4 100644
---- a/src/uci.rs
-+++ b/src/uci.rs
-@@ -142,8 +142,8 @@ impl UciInterface {
-         if movetime.is_none() {
-             // Use the basic Time Management formula from:
-             // https://www.chessprogramming.org/Time_Management
--            // Either using the given movestogo or the default value of 20.
--            let movestogo = movestogo.unwrap_or(20);
-+            // Either using the given movestogo or the default value of 30.
-+            let movestogo = movestogo.unwrap_or(30);
  
-             let (our_time, our_inc) = match self.engine.state.active_side {
-                 Side::White => (wtime.unwrap(), winc.unwrap()),
++pub fn get_piece_value(piece: Piece) -> i32 {
++    match piece {
++        Pawn => PAWN_VALUE,
++        Knight => KNIGHT_VALUE,
++        Bishop => BISHOP_VALUE,
++        Rook => ROOK_VALUE,
++        Queen => QUEEN_VALUE,
++        King => KING_VALUE,
++    }   
++}
++
+ #[test]
+ fn test_evaluate_relative_01() {
+     let state = State::new_from_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");

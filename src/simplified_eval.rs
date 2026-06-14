@@ -5,15 +5,15 @@ use mouse::State;
 use mouse::backend::constants::SQUARES_AMOUNT;
 use mouse::bitboard::BitBoard;
 use mouse::piece::Piece::{Bishop, King, Knight, Pawn, Queen, Rook};
-use mouse::piece::{ALL_PIECES, ALL_SIDES, Side};
+use mouse::piece::{ALL_PIECES, ALL_SIDES, Side, Piece};
 
 // Piece Values:
-const PAWN_VALUE: i32 = 100;
-const KNIGHT_VALUE: i32 = 320;
-const BISHOP_VALUE: i32 = 330;
-const ROOK_VALUE: i32 = 500;
-const QUEEN_VALUE: i32 = 900;
-const KING_VALUE: i32 = 10000;
+pub const PAWN_VALUE: i32 = 100;
+pub const KNIGHT_VALUE: i32 = 320;
+pub const BISHOP_VALUE: i32 = 330;
+pub const ROOK_VALUE: i32 = 500;
+pub const QUEEN_VALUE: i32 = 900;
+pub const KING_VALUE: i32 = 10000;
 
 // Piece-Square-Tables:
 // Do note that these tables are for black and need to be mirrored for white.
@@ -105,14 +105,7 @@ pub fn evaluate_for_white(state: &State) -> i32 {
 
     // Then, sum up the piece values.
     for piece in ALL_PIECES {
-        let piece_value = match piece {
-            Pawn => PAWN_VALUE,
-            Knight => KNIGHT_VALUE,
-            Bishop => BISHOP_VALUE,
-            Rook => ROOK_VALUE,
-            Queen => QUEEN_VALUE,
-            King => KING_VALUE,
-        };
+        let piece_value = get_piece_value(piece);
 
         let white_piece_count = bb_mgr
             .get_colored_piece_bb(piece, Side::White)
@@ -156,6 +149,17 @@ pub fn evaluate_for_white(state: &State) -> i32 {
     }
 
     eval
+}
+
+pub fn get_piece_value(piece: Piece) -> i32 {
+    match piece {
+        Pawn => PAWN_VALUE,
+        Knight => KNIGHT_VALUE,
+        Bishop => BISHOP_VALUE,
+        Rook => ROOK_VALUE,
+        Queen => QUEEN_VALUE,
+        King => KING_VALUE,
+    }   
 }
 
 #[test]

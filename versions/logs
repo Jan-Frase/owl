@@ -1,0 +1,59 @@
+[INFO  ] [20:34:44.474019] <                    > fastchess --- fastchess alpha 1.8.0 compiled for ubuntu-22.04 20260128-072859b (CI) 
+[INFO  ] [20:34:44.474069] <                    > fastchess --- Setting seed to: 2143319544359605066
+[INFO  ] [20:34:44.475726] <                    > fastchess --- Starting tournament...
+[Engine] [20:34:44.476077] <     140447048370992>  08 <--- uci
+[Engine] [20:34:44.476612] <     140447048370992>  08 ---> id name MouseAndOwl
+[Engine] [20:34:44.476629] <     140447048370992>  08 ---> id author Jan Frase
+[Engine] [20:34:44.476637] <     140447048370992>  08 ---> uciok
+[Engine] [20:34:44.476803] <     140447048370992>  07 <--- uci
+[Engine] [20:34:44.477186] <     140447048370992>  07 ---> id name MouseAndOwl
+[Engine] [20:34:44.477202] <     140447048370992>  07 ---> id author Jan Frase
+[Engine] [20:34:44.477210] <     140447048370992>  07 ---> uciok
+[Engine] [20:34:44.477221] <     140447048370992>  08 <--- ucinewgame
+[Engine] [20:34:44.477232] <     140447048370992>  08 <--- isready
+[Engine] [20:34:44.477321] <     140447048370992>  08 ---> readyok
+[Engine] [20:34:44.477338] <     140447048370992>  07 <--- ucinewgame
+[Engine] [20:34:44.477350] <     140447048370992>  07 <--- isready
+[Engine] [20:34:44.477424] <     140447048370992>  07 ---> readyok
+[Engine] [20:34:44.477442] <     140447048370992>  08 <--- isready
+[Engine] [20:34:44.477528] <     140447048370992>  08 ---> readyok
+[Engine] [20:34:44.477547] <     140447048370992>  08 <--- isready
+[Engine] [20:34:44.477628] <     140447048370992>  08 ---> readyok
+[Engine] [20:34:44.477646] <     140447048370992>  08 <--- position startpos moves b2b3 b7b6 c1b2 c8b7
+[Engine] [20:34:44.477657] <     140447048370992>  08 <--- isready
+[Engine] [20:34:44.477723] <     140447048370992>  08 ---> readyok
+[Engine] [20:34:44.477735] <     140447048370992>  08 <--- go wtime 10100 btime 10100 winc 100 binc 100
+[Engine] [20:34:44.477838] <     140447048370992>  08 ---> info depth 1 nodes 39 qnodes 12 score 50, took 58.115µs
+[Engine] [20:34:44.478365] <     140447048370992>  08 ---> info depth 2 nodes 622 qnodes 219 score 0, took 522.901µs
+[Engine] [20:34:44.483546] <     140447048370992>  08 ---> info depth 3 nodes 7077 qnodes 2133 score 50, took 5.14711ms
+[Engine] [20:34:44.533816] <     140447048370992>  08 ---> info depth 4 nodes 72112 qnodes 27531 score 0, took 50.258713ms
+[Engine] [20:34:44.981917] <     140447048370992>  08 ---> time allocated: 504ms, time taken: 504.108723ms
+[Engine] [20:34:44.981966] <     140447048370992>  08 ---> bestmove g1f3
+[Engine] [20:34:44.981992] <     140447048370992>  08 <--- isready
+[Engine] [20:34:44.982088] <     140447048370992>  08 ---> readyok
+[Engine] [20:34:44.982139] <     140447048370992>  07 <--- isready
+[Engine] [20:34:44.982198] <     140447048370992>  07 ---> readyok
+[Engine] [20:34:44.982209] <     140447048370992>  07 <--- position startpos moves b2b3 b7b6 c1b2 c8b7 g1f3
+[Engine] [20:34:44.982219] <     140447048370992>  07 <--- isready
+[Engine] [20:34:44.982247] <     140447048370992>  07 ---> readyok
+[Engine] [20:34:44.982262] <     140447048370992>  07 <--- go wtime 9696 btime 10100 winc 100 binc 100
+[Engine] [20:34:44.982364] <     140447048370992>  <stderr> 07 ---> thread 'main' (14146) panicked at src/move_list.rs:95:20:
+[Engine] [20:34:44.982374] <     140447048370992>  <stderr> 07 ---> index out of bounds: the len is 2 but the index is 2
+[Engine] [20:34:44.982381] <     140447048370992>  <stderr> 07 ---> note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+[WARN  ] [20:34:55.189059] <     140447048370992> fastchess --- Engine 07 disconnects
+[WARN  ] [20:34:55.189112] <     140447048370992> fastchess --- Game 1 between 08 and 07 stalled / disconnected
+[WARN  ] [20:34:55.189129] <                    > fastchess --- Game 1 stalled / disconnected and no recover option set for engine, stopping tournament.
+
+[Engine] [20:34:55.477095] <             8707760>  08 <--- stop
+[Engine] [20:34:55.477120] <             8707760>  08 <--- quit
+[Engine] [20:34:55.577271] <             8707760>  <stderr> 08 ---> Process exited normally with status 0
+[Engine] [20:34:55.577355] <             8707760>  07 <--- stop
+[Engine] [20:34:55.577372] <             8707760>  07 <--- quit
+[Engine] [20:34:55.577393] <             8707760>  <stderr> 07 ---> Process exited normally with status 0
+[INFO  ] [20:34:55.577471] <                    > fastchess --- Tournament was interrupted. To resume the tournament, run: ./fastchess/fastchess -config file=config.json
+
+[INFO  ] [20:34:55.577507] <                    > fastchess --- Finished match
+
+[INFO  ] [20:34:55.577518] <                    > fastchess --- Total Time: 00:00:11 (hours:minutes:seconds)
+
+

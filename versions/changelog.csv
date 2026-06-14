@@ -4,5 +4,6 @@ version, update, wins, losses, draws
 03, added alpha beta pruning, 298, 29, 173
 04, added draw detection for 50 move rule - repetition and some cases of insufficent material, 209, 128, 163
 05, added better time control and quisence search, 370, 100, 30
-06, fixed missing node counting in q-search 
+06, fixed missing node counting in q-search, 252, 193, 55
+07, added MVV-LVA move ordering,
 

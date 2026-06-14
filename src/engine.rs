@@ -5,6 +5,7 @@ use mouse::moove::Moove;
 use mouse::piece::Piece::{Bishop, Knight};
 use std::str::SplitWhitespace;
 use std::time::Duration;
+use crate::move_list::MoveList;
 
 const INF: i32 = 10_000_000;
 const MATE_SCORE: i32 = 100_000;
@@ -111,7 +112,7 @@ impl Engine {
             // Update the best move if the iteration finished before running out of time.
             self.best_move = self.search_data_per_depth.best_move;
 
-            // Return if the current depth * 5 took more than we have remaining...
+            // Return if the current depth took more than we have remaining...
             let time_remaining = self.time_remaining();
             match time_remaining {
                 None => {break;}
@@ -129,7 +130,7 @@ impl Engine {
             }
         }
 
-        // println!("time allocated: {:?}, time taken: {:?}", self.time_limit, self.start_time.elapsed());
+        println!("time allocated: {:?}, time taken: {:?}", self.time_limit, self.start_time.elapsed());
 
         // If no iteration finished just return a random move...
         self.best_move.unwrap_or(self.state.gen_moves()[0])
@@ -140,11 +141,11 @@ impl Engine {
     // - minimax in negation max form
     // - alpha-beta pruning
     // - draw by repetition, insufficient material and 50 move rule
-    // - Proper TC?
-
-    // TODO: Next steps:
+    // - Time Control after x nodes
     // - Quiescence search
     // - Basic Move ordering MVV-LVA
+
+    // TODO: Next steps:
     // - TT Table
     fn search(&mut self, current_depth: i32, mut alpha: i32, beta: i32) -> i32 {
         if self.depth_out_of_time() {
@@ -157,10 +158,10 @@ impl Engine {
         }
 
         // Gen all legal moves.
-        let moves = self.state.gen_moves();
+        let move_list = MoveList::new(&self.state);
 
         // If we can't move, it is either a stalemate or a checkmate.
-        if moves.is_empty() {
+        if move_list.is_empty() {
             return if self.state.is_in_check() {
                 // Mates that are further away are better.
                 -MATE_SCORE + current_depth
@@ -175,7 +176,7 @@ impl Engine {
         };
 
         let mut max_score = -INF;
-        for mve in moves {
+        for mve in move_list {
             self.stats.nodes += 1;
 
             // TODO: prolly better to implement unmake move eh.
@@ -217,10 +218,10 @@ impl Engine {
             return DRAW_SCORE;
         }
 
-        let capture_moves = self.state.gen_attacks();
+        let attack_list = MoveList::new_only_attacks(&self.state);
 
         // If there are no more captures, finally evaluate the position.
-        if capture_moves.is_empty() {
+        if attack_list.is_empty() {
             return evaluate_relative(&self.state);
         }
 
@@ -235,7 +236,7 @@ impl Engine {
         }
 
         // Continue normal q-search.
-        for mve in capture_moves {
+        for mve in attack_list {
             self.stats.nodes += 1;
             self.stats.q_nodes += 1;
             // TODO: prolly better to implement unmake move eh.

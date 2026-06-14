@@ -32,9 +32,9 @@
         "additional_lines_rgx": [],
         "event_name": "Fastchess Tournament",
         "site": "?",
-        "file": "pgn",
+        "file": "",
         "notation": 0,
-        "append_file": false,
+        "append_file": true,
         "track_nodes": false,
         "track_seldepth": false,
         "track_nps": false,
@@ -60,7 +60,7 @@
     },
     "config_name": "config.json",
     "output": 0,
-    "seed": 2802409837964839465,
+    "seed": 9388404156806500096,
     "variant": 0,
     "type": 0,
     "gauntlet_seeds": 1,
@@ -88,6 +88,26 @@
     },
     "engines": [
         {
+            "name": "07",
+            "dir": "",
+            "cmd": "./07",
+            "args": "",
+            "restart": false,
+            "options": [],
+            "limit": {
+                "tc": {
+                    "increment": 100,
+                    "fixed_time": 0,
+                    "time": 10000,
+                    "moves": 0,
+                    "timemargin": 0
+                },
+                "nodes": 0,
+                "plies": 0
+            },
+            "variant": 0
+        },
+        {
             "name": "06",
             "dir": "",
             "cmd": "./06",
@@ -106,36 +126,16 @@
                 "plies": 0
             },
             "variant": 0
-        },
-        {
-            "name": "05",
-            "dir": "",
-            "cmd": "./05",
-            "args": "",
-            "restart": false,
-            "options": [],
-            "limit": {
-                "tc": {
-                    "increment": 100,
-                    "fixed_time": 0,
-                    "time": 10000,
-                    "moves": 0,
-                    "timemargin": 0
-                },
-                "nodes": 0,
-                "plies": 0
-            },
-            "variant": 0
         }
     ],
     "stats": {
-        "06 vs 05": {
-            "wins": 23,
-            "losses": 13,
-            "draws": 2,
-            "penta_WW": 4,
-            "penta_WD": 2,
-            "penta_WL": 13,
+        "07 vs 06": {
+            "wins": 47,
+            "losses": 3,
+            "draws": 10,
+            "penta_WW": 17,
+            "penta_WD": 10,
+            "penta_WL": 3,
             "penta_DD": 0,
             "penta_LD": 0,
             "penta_LL": 0

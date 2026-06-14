@@ -33,5 +33,5 @@ fi
   -engine cmd="./$old" name="$old" \
   -each tc=10+0.1 \
   -openings file=./Openings-PGN/2moves_LT_1000.pgn format=pgn order=sequential \
-  -pgnout file=pgn append=false \
   -rounds "$rounds" -repeat -concurrency 6
+  # -pgnout file=pgn append=false -log file=logs level=warn append=false engine=true \
