@@ -13,9 +13,9 @@ use std::time::Duration;
 // Currently, commands that are not supported are commented out.
 enum CommandIncoming {
     Uci,
-    // Debug,
+    Debug(String),
     IsReady,
-    // SetOption,
+    SetOption(String),
     // Register,
     UciNewGame,
     Position(String),
@@ -34,7 +34,9 @@ impl From<String> for CommandIncoming {
         let options = String::from(split_value.1);
         match command.trim() {
             "uci" => Uci,
+            "debug" => Debug(options),
             "isready" => IsReady,
+            "setoption" => SetOption(options),
             "ucinewgame" => UciNewGame,
             "position" => Position(options),
             "go" => Go(options),
@@ -68,7 +70,9 @@ impl UciInterface {
             // Execute the command.
             match command {
                 Uci => self.uci(),
+                Debug(options) => self.debug(options.as_str()),
                 IsReady => self.is_ready(),
+                SetOption(options) => self.set_option(options.as_str()),
                 UciNewGame => self.uci_new_game(),
                 Position(fen_and_moves) => self.position(fen_and_moves.as_str()),
                 Go(cmd) => self.go(cmd.as_str()),
@@ -83,11 +87,42 @@ impl UciInterface {
     fn uci(&self) {
         println!("id name MouseAndOwl");
         println!("id author Jan Frase");
+        println!("option name Logging type check");
         println!("uciok")
+    }
+
+    fn debug(&mut self, options: &str) {
+        match options {
+            "on" => self.engine.debug = true,
+            "off" => self.engine.debug = false,
+            _ => println!("info string Unsupported debug option: {}", options),
+        }
     }
 
     fn is_ready(&self) {
         println!("readyok")
+    }
+
+    fn set_option(&mut self, option: &str) {
+        let mut iter = option.split_whitespace();
+        let name = iter.next().unwrap();
+        if name != "name" {
+            println!("info string Unsupported option string: {}", option);
+            return;
+        }
+        let name = iter.next().unwrap();
+        let value = iter.next().unwrap();
+        if value != "value" {
+            println!("info string Unsupported option string: {}", option);
+            return;
+        }
+        let value = iter.next().unwrap();
+        match name {
+            "Logging" => {
+                self.engine.debug = value == "true";
+            }
+            _ => println!("info string Unsupported option: {}", option),
+        }
     }
 
     fn uci_new_game(&mut self) {
@@ -98,11 +133,15 @@ impl UciInterface {
     fn position(&mut self, fen_and_moves: &str) {
         let mut iter = fen_and_moves.split_whitespace();
 
-        let fen = match iter.next().unwrap() {
+        let next = iter.next().unwrap();
+        let fen = match next {
             "startpos" => String::from(STARTING_POS),
             // fen is all strings concatenated until we hit `moves` or the string ends.
             "fen" => iter.by_ref().take(6).collect::<Vec<&str>>().join(" "),
-            _ => panic!("Error: fen must be 'startpos' or 'fen'."),
+            _ => {
+                println!("info string Unsupported fen: {}", next);
+                panic!("Unsupported fen");
+            }
         };
 
         // Skip the 'moves' word if it exists.
@@ -133,7 +172,7 @@ impl UciInterface {
                 "binc" => binc = Some(x),
                 "movestogo" => movestogo = Some(x),
                 "movetime" => movetime = Some(x),
-                _ => println!("Error: unsupported option: {}", option),
+                _ => println!("info string Unsupported option: {}", option),
             }
         }
 
@@ -164,8 +203,8 @@ impl UciInterface {
     fn perft(&mut self, cmd: &str) {
         let depth: i32 = match cmd.parse::<i32>() {
             Ok(value) => value,
-            Err(_) => {
-                println!("Error: depth must be an integer.");
+            Err(err) => {
+                println!("info string Unsupported depth {}.", err);
                 return;
             }
         };

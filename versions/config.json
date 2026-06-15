@@ -60,7 +60,7 @@
     },
     "config_name": "config.json",
     "output": 0,
-    "seed": 9388404156806500096,
+    "seed": 11803404226811558549,
     "variant": 0,
     "type": 0,
     "gauntlet_seeds": 1,
@@ -88,6 +88,26 @@
     },
     "engines": [
         {
+            "name": "08",
+            "dir": "",
+            "cmd": "./08",
+            "args": "",
+            "restart": false,
+            "options": [],
+            "limit": {
+                "tc": {
+                    "increment": 100,
+                    "fixed_time": 0,
+                    "time": 10000,
+                    "moves": 0,
+                    "timemargin": 0
+                },
+                "nodes": 0,
+                "plies": 0
+            },
+            "variant": 0
+        },
+        {
             "name": "07",
             "dir": "",
             "cmd": "./07",
@@ -106,39 +126,19 @@
                 "plies": 0
             },
             "variant": 0
-        },
-        {
-            "name": "06",
-            "dir": "",
-            "cmd": "./06",
-            "args": "",
-            "restart": false,
-            "options": [],
-            "limit": {
-                "tc": {
-                    "increment": 100,
-                    "fixed_time": 0,
-                    "time": 10000,
-                    "moves": 0,
-                    "timemargin": 0
-                },
-                "nodes": 0,
-                "plies": 0
-            },
-            "variant": 0
         }
     ],
     "stats": {
-        "07 vs 06": {
-            "wins": 47,
-            "losses": 3,
-            "draws": 10,
-            "penta_WW": 17,
-            "penta_WD": 10,
-            "penta_WL": 3,
-            "penta_DD": 0,
-            "penta_LD": 0,
-            "penta_LL": 0
+        "08 vs 07": {
+            "wins": 178,
+            "losses": 45,
+            "draws": 35,
+            "penta_WW": 65,
+            "penta_WD": 21,
+            "penta_WL": 27,
+            "penta_DD": 2,
+            "penta_LD": 10,
+            "penta_LL": 4
         }
     }
 }

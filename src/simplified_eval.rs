@@ -5,7 +5,7 @@ use mouse::State;
 use mouse::backend::constants::SQUARES_AMOUNT;
 use mouse::bitboard::BitBoard;
 use mouse::piece::Piece::{Bishop, King, Knight, Pawn, Queen, Rook};
-use mouse::piece::{ALL_PIECES, ALL_SIDES, Side, Piece};
+use mouse::piece::{ALL_PIECES, ALL_SIDES, Piece, Side};
 
 // Piece Values:
 pub const PAWN_VALUE: i32 = 100;
@@ -159,7 +159,7 @@ pub fn get_piece_value(piece: Piece) -> i32 {
         Rook => ROOK_VALUE,
         Queen => QUEEN_VALUE,
         King => KING_VALUE,
-    }   
+    }
 }
 
 #[test]

@@ -1,9 +1,10 @@
 use crate::uci::UciInterface;
 
 mod engine;
-mod simplified_eval;
-mod uci;
 mod move_list;
+mod simplified_eval;
+mod transposition_table;
+mod uci;
 
 fn main() {
     start_uci();

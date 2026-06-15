@@ -1,0 +1,830 @@
+
+===== Testing against Stockfish Skill Level 0 =====
+Started game 1 of 40 (07 vs stockfish)
+Started game 2 of 40 (stockfish vs 07)
+Started game 3 of 40 (07 vs stockfish)
+Started game 5 of 40 (07 vs stockfish)
+Started game 6 of 40 (stockfish vs 07)
+Started game 4 of 40 (stockfish vs 07)
+Finished game 4 (stockfish vs 07): 1-0 {White mates}
+Started game 7 of 40 (07 vs stockfish)
+Finished game 3 (07 vs stockfish): 1-0 {White mates}
+Started game 8 of 40 (stockfish vs 07)
+Finished game 2 (stockfish vs 07): 0-1 {Black mates}
+Started game 9 of 40 (07 vs stockfish)
+Finished game 5 (07 vs stockfish): 1-0 {White mates}
+Started game 10 of 40 (stockfish vs 07)
+Finished game 1 (07 vs stockfish): 1-0 {White mates}
+Started game 11 of 40 (07 vs stockfish)
+Finished game 6 (stockfish vs 07): 0-1 {Black mates}
+Started game 12 of 40 (stockfish vs 07)
+Finished game 7 (07 vs stockfish): 1-0 {White mates}
+Started game 13 of 40 (07 vs stockfish)
+Finished game 8 (stockfish vs 07): 0-1 {Black mates}
+Started game 14 of 40 (stockfish vs 07)
+Finished game 9 (07 vs stockfish): 0-1 {Black mates}
+Started game 15 of 40 (07 vs stockfish)
+Finished game 10 (stockfish vs 07): 0-1 {Black mates}
+Started game 16 of 40 (stockfish vs 07)
+Finished game 12 (stockfish vs 07): 0-1 {Black mates}
+Started game 17 of 40 (07 vs stockfish)
+Finished game 11 (07 vs stockfish): 1-0 {White mates}
+Started game 18 of 40 (stockfish vs 07)
+Finished game 15 (07 vs stockfish): 1-0 {White mates}
+Started game 19 of 40 (07 vs stockfish)
+Finished game 14 (stockfish vs 07): 0-1 {Black mates}
+Started game 20 of 40 (stockfish vs 07)
+Finished game 13 (07 vs stockfish): 1-0 {White mates}
+Started game 21 of 40 (07 vs stockfish)
+Finished game 16 (stockfish vs 07): 1-0 {White mates}
+Started game 22 of 40 (stockfish vs 07)
+Finished game 17 (07 vs stockfish): 1-0 {White mates}
+Started game 23 of 40 (07 vs stockfish)
+Finished game 19 (07 vs stockfish): 1-0 {White mates}
+Started game 24 of 40 (stockfish vs 07)
+Finished game 18 (stockfish vs 07): 0-1 {Black mates}
+Started game 25 of 40 (07 vs stockfish)
+Finished game 21 (07 vs stockfish): 1-0 {White mates}
+Started game 26 of 40 (stockfish vs 07)
+Finished game 20 (stockfish vs 07): 0-1 {Black mates}
+--------------------------------------------------
+Results of 07 vs stockfish (10+0.1, NULL - 1t, NULL - 16MB, 2moves_LT_1000.pgn):
+Elo: 301.33 +/- 341.90, nElo: 375.27 +/- 152.27
+LOS: 100.00 %, DrawRatio: 30.00 %, PairsRatio: inf
+Games: 20, Wins: 17, Losses: 3, Draws: 0, Points: 17.0 (85.00 %)
+Ptnml(0-2): [0, 0, 3, 0, 7], WL/DD Ratio: inf
+--------------------------------------------------
+Started game 27 of 40 (07 vs stockfish)
+Finished game 25 (07 vs stockfish): 1-0 {White mates}
+Started game 28 of 40 (stockfish vs 07)
+Finished game 24 (stockfish vs 07): 0-1 {Black mates}
+Started game 29 of 40 (07 vs stockfish)
+Finished game 26 (stockfish vs 07): 0-1 {Black mates}
+Started game 30 of 40 (stockfish vs 07)
+Finished game 23 (07 vs stockfish): 1-0 {White mates}
+Started game 31 of 40 (07 vs stockfish)
+Finished game 27 (07 vs stockfish): 1-0 {White mates}
+Started game 32 of 40 (stockfish vs 07)
+Finished game 22 (stockfish vs 07): 1-0 {White mates}
+Started game 33 of 40 (07 vs stockfish)
+Finished game 28 (stockfish vs 07): 0-1 {Black mates}
+Started game 34 of 40 (stockfish vs 07)
+Finished game 29 (07 vs stockfish): 1-0 {White mates}
+Started game 35 of 40 (07 vs stockfish)
+Finished game 30 (stockfish vs 07): 0-1 {Black mates}
+Started game 36 of 40 (stockfish vs 07)
+Finished game 31 (07 vs stockfish): 1-0 {White mates}
+Started game 37 of 40 (07 vs stockfish)
+Finished game 32 (stockfish vs 07): 0-1 {Black mates}
+Started game 38 of 40 (stockfish vs 07)
+Finished game 33 (07 vs stockfish): 1-0 {White mates}
+Started game 39 of 40 (07 vs stockfish)
+Finished game 34 (stockfish vs 07): 0-1 {Black mates}
+Started game 40 of 40 (stockfish vs 07)
+Finished game 37 (07 vs stockfish): 1-0 {White mates}
+Finished game 35 (07 vs stockfish): 1-0 {White mates}
+Finished game 38 (stockfish vs 07): 0-1 {Black mates}
+Finished game 36 (stockfish vs 07): 0-1 {Black mates}
+Finished game 39 (07 vs stockfish): 1-0 {White mates}
+Finished game 40 (stockfish vs 07): 0-1 {Black mates}
+--------------------------------------------------
+Results of 07 vs stockfish (10+0.1, NULL - 1t, NULL - 16MB, 2moves_LT_1000.pgn):
+Elo: 381.70 +/- 253.33, nElo: 491.35 +/- 107.67
+LOS: 100.00 %, DrawRatio: 20.00 %, PairsRatio: inf
+Games: 40, Wins: 36, Losses: 4, Draws: 0, Points: 36.0 (90.00 %)
+Ptnml(0-2): [0, 0, 4, 0, 16], WL/DD Ratio: inf
+--------------------------------------------------
+Finished match
+Total Time: 00:02:41 (hours:minutes:seconds)
+
+
+
+
+===== Testing against Stockfish Skill Level 1 =====
+Started game 1 of 40 (07 vs stockfish)
+Started game 4 of 40 (stockfish vs 07)
+Started game 3 of 40 (07 vs stockfish)
+Started game 6 of 40 (stockfish vs 07)
+Started game 2 of 40 (stockfish vs 07)
+Started game 5 of 40 (07 vs stockfish)
+Finished game 5 (07 vs stockfish): 1-0 {White mates}
+Started game 7 of 40 (07 vs stockfish)
+Finished game 1 (07 vs stockfish): 1-0 {White mates}
+Started game 8 of 40 (stockfish vs 07)
+Finished game 4 (stockfish vs 07): 0-1 {Black mates}
+Started game 9 of 40 (07 vs stockfish)
+Finished game 3 (07 vs stockfish): 1-0 {White mates}
+Started game 10 of 40 (stockfish vs 07)
+Finished game 6 (stockfish vs 07): 0-1 {Black mates}
+Started game 11 of 40 (07 vs stockfish)
+Finished game 2 (stockfish vs 07): 1/2-1/2 {Draw by stalemate}
+Started game 12 of 40 (stockfish vs 07)
+Finished game 8 (stockfish vs 07): 0-1 {Black mates}
+Started game 13 of 40 (07 vs stockfish)
+Finished game 9 (07 vs stockfish): 1-0 {White mates}
+Started game 14 of 40 (stockfish vs 07)
+Finished game 10 (stockfish vs 07): 0-1 {Black mates}
+Started game 15 of 40 (07 vs stockfish)
+Finished game 7 (07 vs stockfish): 1-0 {White mates}
+Started game 16 of 40 (stockfish vs 07)
+Finished game 11 (07 vs stockfish): 1-0 {White mates}
+Started game 17 of 40 (07 vs stockfish)
+Finished game 12 (stockfish vs 07): 0-1 {Black mates}
+Started game 18 of 40 (stockfish vs 07)
+Finished game 13 (07 vs stockfish): 1-0 {White mates}
+Started game 19 of 40 (07 vs stockfish)
+Finished game 18 (stockfish vs 07): 0-1 {Black mates}
+Started game 20 of 40 (stockfish vs 07)
+Finished game 16 (stockfish vs 07): 0-1 {Black mates}
+Started game 21 of 40 (07 vs stockfish)
+Finished game 17 (07 vs stockfish): 1-0 {White mates}
+Started game 22 of 40 (stockfish vs 07)
+Finished game 15 (07 vs stockfish): 1-0 {White mates}
+Started game 23 of 40 (07 vs stockfish)
+Finished game 19 (07 vs stockfish): 1-0 {White mates}
+Started game 24 of 40 (stockfish vs 07)
+Finished game 20 (stockfish vs 07): 0-1 {Black mates}
+--------------------------------------------------
+Results of 07 vs stockfish (10+0.1, NULL - 1t, NULL - 16MB, 2moves_LT_1000.pgn):
+Elo: 617.63 +/- -nan, nElo: 1476.60 +/- 160.50
+LOS: 100.00 %, DrawRatio: 0.00 %, PairsRatio: inf
+Games: 18, Wins: 17, Losses: 0, Draws: 1, Points: 17.5 (97.22 %)
+Ptnml(0-2): [0, 0, 0, 1, 8], WL/DD Ratio: -nan
+--------------------------------------------------
+Started game 25 of 40 (07 vs stockfish)
+Finished game 22 (stockfish vs 07): 0-1 {Black mates}
+Started game 26 of 40 (stockfish vs 07)
+Finished game 23 (07 vs stockfish): 1-0 {White mates}
+Started game 27 of 40 (07 vs stockfish)
+Finished game 14 (stockfish vs 07): 1/2-1/2 {Draw by fifty moves rule}
+Started game 28 of 40 (stockfish vs 07)
+Finished game 21 (07 vs stockfish): 1-0 {White mates}
+Started game 29 of 40 (07 vs stockfish)
+Finished game 24 (stockfish vs 07): 0-1 {Black mates}
+Started game 30 of 40 (stockfish vs 07)
+Finished game 26 (stockfish vs 07): 0-1 {Black mates}
+Started game 31 of 40 (07 vs stockfish)
+Finished game 27 (07 vs stockfish): 1-0 {White mates}
+Started game 32 of 40 (stockfish vs 07)
+Finished game 28 (stockfish vs 07): 0-1 {Black mates}
+Started game 33 of 40 (07 vs stockfish)
+Finished game 25 (07 vs stockfish): 1-0 {White mates}
+Started game 34 of 40 (stockfish vs 07)
+Finished game 29 (07 vs stockfish): 0-1 {Black mates}
+Started game 35 of 40 (07 vs stockfish)
+Finished game 30 (stockfish vs 07): 0-1 {Black mates}
+Started game 36 of 40 (stockfish vs 07)
+Finished game 32 (stockfish vs 07): 0-1 {Black mates}
+Started game 37 of 40 (07 vs stockfish)
+Finished game 31 (07 vs stockfish): 1-0 {White mates}
+Started game 38 of 40 (stockfish vs 07)
+Finished game 33 (07 vs stockfish): 1-0 {White mates}
+Started game 39 of 40 (07 vs stockfish)
+Finished game 34 (stockfish vs 07): 1-0 {White mates}
+Started game 40 of 40 (stockfish vs 07)
+Finished game 36 (stockfish vs 07): 0-1 {Black mates}
+Finished game 35 (07 vs stockfish): 1-0 {White mates}
+Finished game 38 (stockfish vs 07): 0-1 {Black mates}
+Finished game 37 (07 vs stockfish): 1-0 {White mates}
+Finished game 39 (07 vs stockfish): 1-0 {White mates}
+Finished game 40 (stockfish vs 07): 0-1 {Black mates}
+--------------------------------------------------
+Results of 07 vs stockfish (10+0.1, NULL - 1t, NULL - 16MB, 2moves_LT_1000.pgn):
+Elo: 436.43 +/- 308.53, nElo: 652.25 +/- 107.67
+LOS: 100.00 %, DrawRatio: 10.00 %, PairsRatio: inf
+Games: 40, Wins: 36, Losses: 2, Draws: 2, Points: 37.0 (92.50 %)
+Ptnml(0-2): [0, 0, 2, 2, 16], WL/DD Ratio: inf
+--------------------------------------------------
+Finished match
+Total Time: 00:02:52 (hours:minutes:seconds)
+
+
+
+
+===== Testing against Stockfish Skill Level 2 =====
+Started game 2 of 40 (stockfish vs 07)
+Started game 5 of 40 (07 vs stockfish)
+Started game 3 of 40 (07 vs stockfish)
+Started game 4 of 40 (stockfish vs 07)
+Started game 6 of 40 (stockfish vs 07)
+Started game 1 of 40 (07 vs stockfish)
+Finished game 6 (stockfish vs 07): 0-1 {Black mates}
+Started game 7 of 40 (07 vs stockfish)
+Finished game 4 (stockfish vs 07): 0-1 {Black mates}
+Started game 8 of 40 (stockfish vs 07)
+Finished game 1 (07 vs stockfish): 1-0 {White mates}
+Started game 9 of 40 (07 vs stockfish)
+Finished game 3 (07 vs stockfish): 1-0 {White mates}
+Started game 10 of 40 (stockfish vs 07)
+Finished game 5 (07 vs stockfish): 1-0 {White mates}
+Started game 11 of 40 (07 vs stockfish)
+Finished game 2 (stockfish vs 07): 1-0 {White mates}
+Started game 12 of 40 (stockfish vs 07)
+Finished game 7 (07 vs stockfish): 1-0 {White mates}
+Started game 13 of 40 (07 vs stockfish)
+Finished game 9 (07 vs stockfish): 1-0 {White mates}
+Started game 14 of 40 (stockfish vs 07)
+Finished game 8 (stockfish vs 07): 0-1 {Black mates}
+Started game 15 of 40 (07 vs stockfish)
+Finished game 10 (stockfish vs 07): 0-1 {Black mates}
+Started game 16 of 40 (stockfish vs 07)
+Finished game 11 (07 vs stockfish): 1-0 {White mates}
+Started game 17 of 40 (07 vs stockfish)
+Finished game 13 (07 vs stockfish): 1-0 {White mates}
+Started game 18 of 40 (stockfish vs 07)
+Finished game 12 (stockfish vs 07): 0-1 {Black mates}
+Started game 19 of 40 (07 vs stockfish)
+Finished game 14 (stockfish vs 07): 0-1 {Black mates}
+Started game 20 of 40 (stockfish vs 07)
+Finished game 15 (07 vs stockfish): 1-0 {White mates}
+Started game 21 of 40 (07 vs stockfish)
+Finished game 16 (stockfish vs 07): 0-1 {Black mates}
+Started game 22 of 40 (stockfish vs 07)
+Finished game 17 (07 vs stockfish): 1-0 {White mates}
+Started game 23 of 40 (07 vs stockfish)
+Finished game 18 (stockfish vs 07): 0-1 {Black mates}
+Started game 24 of 40 (stockfish vs 07)
+Finished game 22 (stockfish vs 07): 0-1 {Black mates}
+Started game 25 of 40 (07 vs stockfish)
+Finished game 19 (07 vs stockfish): 1-0 {White mates}
+Started game 26 of 40 (stockfish vs 07)
+Finished game 21 (07 vs stockfish): 1-0 {White mates}
+Started game 27 of 40 (07 vs stockfish)
+Finished game 20 (stockfish vs 07): 0-1 {Black mates}
+--------------------------------------------------
+Results of 07 vs stockfish (10+0.1, NULL - 1t, NULL - 16MB, 2moves_LT_1000.pgn):
+Elo: 528.89 +/- -nan, nElo: 776.89 +/- 145.18
+LOS: 100.00 %, DrawRatio: 9.09 %, PairsRatio: inf
+Games: 22, Wins: 21, Losses: 1, Draws: 0, Points: 21.0 (95.45 %)
+Ptnml(0-2): [0, 0, 1, 0, 10], WL/DD Ratio: inf
+--------------------------------------------------
+Started game 28 of 40 (stockfish vs 07)
+Finished game 23 (07 vs stockfish): 1-0 {White mates}
+Started game 29 of 40 (07 vs stockfish)
+Finished game 24 (stockfish vs 07): 0-1 {Black mates}
+Started game 30 of 40 (stockfish vs 07)
+Finished game 25 (07 vs stockfish): 1-0 {White mates}
+Started game 31 of 40 (07 vs stockfish)
+Finished game 27 (07 vs stockfish): 1-0 {White mates}
+Started game 32 of 40 (stockfish vs 07)
+Finished game 26 (stockfish vs 07): 0-1 {Black mates}
+Started game 33 of 40 (07 vs stockfish)
+Finished game 28 (stockfish vs 07): 0-1 {Black mates}
+Started game 34 of 40 (stockfish vs 07)
+Finished game 29 (07 vs stockfish): 1-0 {White mates}
+Started game 35 of 40 (07 vs stockfish)
+Finished game 31 (07 vs stockfish): 1-0 {White mates}
+Started game 36 of 40 (stockfish vs 07)
+Finished game 33 (07 vs stockfish): 1-0 {White mates}
+Started game 37 of 40 (07 vs stockfish)
+Finished game 30 (stockfish vs 07): 0-1 {Black mates}
+Started game 38 of 40 (stockfish vs 07)
+Finished game 32 (stockfish vs 07): 0-1 {Black mates}
+Started game 39 of 40 (07 vs stockfish)
+Finished game 34 (stockfish vs 07): 0-1 {Black mates}
+Started game 40 of 40 (stockfish vs 07)
+Finished game 36 (stockfish vs 07): 0-1 {Black mates}
+Finished game 37 (07 vs stockfish): 1-0 {White mates}
+Finished game 38 (stockfish vs 07): 0-1 {Black mates}
+Finished game 40 (stockfish vs 07): 0-1 {Black mates}
+Finished game 35 (07 vs stockfish): 1-0 {White mates}
+Finished game 39 (07 vs stockfish): 1-0 {White mates}
+--------------------------------------------------
+Results of 07 vs stockfish (10+0.1, NULL - 1t, NULL - 16MB, 2moves_LT_1000.pgn):
+Elo: 636.43 +/- -nan, nElo: 1070.87 +/- 107.67
+LOS: 100.00 %, DrawRatio: 5.00 %, PairsRatio: inf
+Games: 40, Wins: 39, Losses: 1, Draws: 0, Points: 39.0 (97.50 %)
+Ptnml(0-2): [0, 0, 1, 0, 19], WL/DD Ratio: inf
+--------------------------------------------------
+Finished match
+Total Time: 00:02:38 (hours:minutes:seconds)
+
+
+
+
+===== Testing against Stockfish Skill Level 3 =====
+Started game 1 of 40 (07 vs stockfish)
+Started game 2 of 40 (stockfish vs 07)
+Started game 4 of 40 (stockfish vs 07)
+Started game 6 of 40 (stockfish vs 07)
+Started game 5 of 40 (07 vs stockfish)
+Started game 3 of 40 (07 vs stockfish)
+Finished game 6 (stockfish vs 07): 0-1 {Black mates}
+Started game 7 of 40 (07 vs stockfish)
+Finished game 4 (stockfish vs 07): 0-1 {Black mates}
+Started game 8 of 40 (stockfish vs 07)
+Finished game 1 (07 vs stockfish): 1-0 {White mates}
+Started game 9 of 40 (07 vs stockfish)
+Finished game 5 (07 vs stockfish): 0-1 {Black mates}
+Started game 10 of 40 (stockfish vs 07)
+Finished game 3 (07 vs stockfish): 1-0 {White mates}
+Started game 11 of 40 (07 vs stockfish)
+Finished game 2 (stockfish vs 07): 0-1 {Black mates}
+Started game 12 of 40 (stockfish vs 07)
+Finished game 9 (07 vs stockfish): 1-0 {White mates}
+Started game 13 of 40 (07 vs stockfish)
+Finished game 7 (07 vs stockfish): 1-0 {White mates}
+Started game 14 of 40 (stockfish vs 07)
+Finished game 8 (stockfish vs 07): 0-1 {Black mates}
+Started game 15 of 40 (07 vs stockfish)
+Finished game 10 (stockfish vs 07): 0-1 {Black mates}
+Started game 16 of 40 (stockfish vs 07)
+Finished game 11 (07 vs stockfish): 1-0 {White mates}
+Started game 17 of 40 (07 vs stockfish)
+Finished game 12 (stockfish vs 07): 0-1 {Black mates}
+Started game 18 of 40 (stockfish vs 07)
+Finished game 15 (07 vs stockfish): 1-0 {White mates}
+Started game 19 of 40 (07 vs stockfish)
+Finished game 16 (stockfish vs 07): 1-0 {White mates}
+Started game 20 of 40 (stockfish vs 07)
+Finished game 17 (07 vs stockfish): 1-0 {White mates}
+Started game 21 of 40 (07 vs stockfish)
+Finished game 13 (07 vs stockfish): 0-1 {Black mates}
+Started game 22 of 40 (stockfish vs 07)
+Finished game 14 (stockfish vs 07): 1-0 {White mates}
+Started game 23 of 40 (07 vs stockfish)
+Finished game 18 (stockfish vs 07): 0-1 {Black mates}
+Started game 24 of 40 (stockfish vs 07)
+Finished game 19 (07 vs stockfish): 1-0 {White mates}
+Started game 25 of 40 (07 vs stockfish)
+Finished game 22 (stockfish vs 07): 0-1 {Black mates}
+Started game 26 of 40 (stockfish vs 07)
+Finished game 21 (07 vs stockfish): 1-0 {White mates}
+Started game 27 of 40 (07 vs stockfish)
+Finished game 23 (07 vs stockfish): 1-0 {White mates}
+Started game 28 of 40 (stockfish vs 07)
+Finished game 20 (stockfish vs 07): 0-1 {Black mates}
+--------------------------------------------------
+Results of 07 vs stockfish (10+0.1, NULL - 1t, NULL - 16MB, 2moves_LT_1000.pgn):
+Elo: 261.29 +/- -nan, nElo: 243.20 +/- 145.18
+LOS: 99.95 %, DrawRatio: 18.18 %, PairsRatio: 8.00
+Games: 22, Wins: 18, Losses: 4, Draws: 0, Points: 18.0 (81.82 %)
+Ptnml(0-2): [1, 0, 2, 0, 8], WL/DD Ratio: inf
+--------------------------------------------------
+Started game 29 of 40 (07 vs stockfish)
+Finished game 24 (stockfish vs 07): 0-1 {Black mates}
+Started game 30 of 40 (stockfish vs 07)
+Finished game 25 (07 vs stockfish): 1-0 {White mates}
+Started game 31 of 40 (07 vs stockfish)
+Finished game 26 (stockfish vs 07): 0-1 {Black mates}
+Started game 32 of 40 (stockfish vs 07)
+Finished game 27 (07 vs stockfish): 1-0 {White mates}
+Started game 33 of 40 (07 vs stockfish)
+Finished game 28 (stockfish vs 07): 0-1 {Black mates}
+Started game 34 of 40 (stockfish vs 07)
+Finished game 29 (07 vs stockfish): 1-0 {White mates}
+Started game 35 of 40 (07 vs stockfish)
+Finished game 30 (stockfish vs 07): 0-1 {Black mates}
+Started game 36 of 40 (stockfish vs 07)
+Finished game 31 (07 vs stockfish): 1-0 {White mates}
+Started game 37 of 40 (07 vs stockfish)
+Finished game 33 (07 vs stockfish): 1-0 {White mates}
+Started game 38 of 40 (stockfish vs 07)
+Finished game 32 (stockfish vs 07): 0-1 {Black mates}
+Started game 39 of 40 (07 vs stockfish)
+Finished game 36 (stockfish vs 07): 0-1 {Black mates}
+Started game 40 of 40 (stockfish vs 07)
+Finished game 34 (stockfish vs 07): 0-1 {Black mates}
+Finished game 37 (07 vs stockfish): 1-0 {White mates}
+Finished game 38 (stockfish vs 07): 1-0 {White mates}
+Finished game 35 (07 vs stockfish): 1-0 {White mates}
+Finished game 40 (stockfish vs 07): 0-1 {Black mates}
+Finished game 39 (07 vs stockfish): 1-0 {White mates}
+--------------------------------------------------
+Results of 07 vs stockfish (10+0.1, NULL - 1t, NULL - 16MB, 2moves_LT_1000.pgn):
+Elo: 338.04 +/- 325.35, nElo: 343.64 +/- 107.67
+LOS: 100.00 %, DrawRatio: 15.00 %, PairsRatio: 16.00
+Games: 40, Wins: 35, Losses: 5, Draws: 0, Points: 35.0 (87.50 %)
+Ptnml(0-2): [1, 0, 3, 0, 16], WL/DD Ratio: inf
+--------------------------------------------------
+Finished match
+Total Time: 00:02:47 (hours:minutes:seconds)
+
+
+
+
+===== Testing against Stockfish Skill Level 4 =====
+Started game 4 of 40 (stockfish vs 07)
+Started game 5 of 40 (07 vs stockfish)
+Started game 3 of 40 (07 vs stockfish)
+Started game 1 of 40 (07 vs stockfish)
+Started game 2 of 40 (stockfish vs 07)
+Started game 6 of 40 (stockfish vs 07)
+Finished game 5 (07 vs stockfish): 1-0 {White mates}
+Started game 7 of 40 (07 vs stockfish)
+Finished game 3 (07 vs stockfish): 1-0 {White mates}
+Started game 8 of 40 (stockfish vs 07)
+Finished game 4 (stockfish vs 07): 0-1 {Black mates}
+Started game 9 of 40 (07 vs stockfish)
+Finished game 1 (07 vs stockfish): 1-0 {White mates}
+Started game 10 of 40 (stockfish vs 07)
+Finished game 6 (stockfish vs 07): 0-1 {Black mates}
+Started game 11 of 40 (07 vs stockfish)
+Finished game 2 (stockfish vs 07): 0-1 {Black mates}
+Started game 12 of 40 (stockfish vs 07)
+Finished game 7 (07 vs stockfish): 1-0 {White mates}
+Started game 13 of 40 (07 vs stockfish)
+Finished game 10 (stockfish vs 07): 0-1 {Black mates}
+Started game 14 of 40 (stockfish vs 07)
+Finished game 8 (stockfish vs 07): 0-1 {Black mates}
+Started game 15 of 40 (07 vs stockfish)
+Finished game 11 (07 vs stockfish): 1-0 {White mates}
+Started game 16 of 40 (stockfish vs 07)
+Finished game 12 (stockfish vs 07): 0-1 {Black mates}
+Started game 17 of 40 (07 vs stockfish)
+Finished game 9 (07 vs stockfish): 1-0 {White mates}
+Started game 18 of 40 (stockfish vs 07)
+Finished game 13 (07 vs stockfish): 0-1 {Black mates}
+Started game 19 of 40 (07 vs stockfish)
+Finished game 15 (07 vs stockfish): 1-0 {White mates}
+Started game 20 of 40 (stockfish vs 07)
+Finished game 17 (07 vs stockfish): 1-0 {White mates}
+Started game 21 of 40 (07 vs stockfish)
+Finished game 14 (stockfish vs 07): 0-1 {Black mates}
+Started game 22 of 40 (stockfish vs 07)
+Finished game 16 (stockfish vs 07): 0-1 {Black mates}
+Started game 23 of 40 (07 vs stockfish)
+Finished game 18 (stockfish vs 07): 0-1 {Black mates}
+Started game 24 of 40 (stockfish vs 07)
+Finished game 19 (07 vs stockfish): 1-0 {White mates}
+Started game 25 of 40 (07 vs stockfish)
+Finished game 20 (stockfish vs 07): 0-1 {Black mates}
+--------------------------------------------------
+Results of 07 vs stockfish (10+0.1, NULL - 1t, NULL - 16MB, 2moves_LT_1000.pgn):
+Elo: 511.50 +/- -nan, nElo: 737.02 +/- 152.27
+LOS: 100.00 %, DrawRatio: 10.00 %, PairsRatio: inf
+Games: 20, Wins: 19, Losses: 1, Draws: 0, Points: 19.0 (95.00 %)
+Ptnml(0-2): [0, 0, 1, 0, 9], WL/DD Ratio: inf
+--------------------------------------------------
+Started game 26 of 40 (stockfish vs 07)
+Finished game 24 (stockfish vs 07): 0-1 {Black mates}
+Started game 27 of 40 (07 vs stockfish)
+Finished game 21 (07 vs stockfish): 1-0 {White mates}
+Started game 28 of 40 (stockfish vs 07)
+Finished game 22 (stockfish vs 07): 0-1 {Black mates}
+Started game 29 of 40 (07 vs stockfish)
+Finished game 23 (07 vs stockfish): 1-0 {White mates}
+Started game 30 of 40 (stockfish vs 07)
+Finished game 27 (07 vs stockfish): 1-0 {White mates}
+Started game 31 of 40 (07 vs stockfish)
+Finished game 28 (stockfish vs 07): 0-1 {Black mates}
+Started game 32 of 40 (stockfish vs 07)
+Finished game 25 (07 vs stockfish): 1-0 {White mates}
+Started game 33 of 40 (07 vs stockfish)
+Finished game 26 (stockfish vs 07): 0-1 {Black mates}
+Started game 34 of 40 (stockfish vs 07)
+Finished game 30 (stockfish vs 07): 0-1 {Black mates}
+Started game 35 of 40 (07 vs stockfish)
+Finished game 29 (07 vs stockfish): 1-0 {White mates}
+Started game 36 of 40 (stockfish vs 07)
+Finished game 31 (07 vs stockfish): 1-0 {White mates}
+Started game 37 of 40 (07 vs stockfish)
+Finished game 32 (stockfish vs 07): 0-1 {Black mates}
+Started game 38 of 40 (stockfish vs 07)
+Finished game 33 (07 vs stockfish): 1-0 {White mates}
+Started game 39 of 40 (07 vs stockfish)
+Finished game 36 (stockfish vs 07): 0-1 {Black mates}
+Started game 40 of 40 (stockfish vs 07)
+Finished game 35 (07 vs stockfish): 1-0 {White mates}
+Finished game 34 (stockfish vs 07): 0-1 {Black mates}
+Finished game 37 (07 vs stockfish): 1-0 {White mates}
+Finished game 38 (stockfish vs 07): 0-1 {Black mates}
+Finished game 39 (07 vs stockfish): 1-0 {White mates}
+Finished game 40 (stockfish vs 07): 0-1 {Black mates}
+--------------------------------------------------
+Results of 07 vs stockfish (10+0.1, NULL - 1t, NULL - 16MB, 2moves_LT_1000.pgn):
+Elo: 636.43 +/- -nan, nElo: 1070.87 +/- 107.67
+LOS: 100.00 %, DrawRatio: 5.00 %, PairsRatio: inf
+Games: 40, Wins: 39, Losses: 1, Draws: 0, Points: 39.0 (97.50 %)
+Ptnml(0-2): [0, 0, 1, 0, 19], WL/DD Ratio: inf
+--------------------------------------------------
+Finished match
+Total Time: 00:02:39 (hours:minutes:seconds)
+
+
+
+
+===== Testing against Stockfish Skill Level 5 =====
+Started game 1 of 40 (07 vs stockfish)
+Started game 2 of 40 (stockfish vs 07)
+Started game 5 of 40 (07 vs stockfish)
+Started game 4 of 40 (stockfish vs 07)
+Started game 3 of 40 (07 vs stockfish)
+Started game 6 of 40 (stockfish vs 07)
+Finished game 6 (stockfish vs 07): 0-1 {Black mates}
+Started game 7 of 40 (07 vs stockfish)
+Finished game 2 (stockfish vs 07): 0-1 {Black mates}
+Started game 8 of 40 (stockfish vs 07)
+Finished game 3 (07 vs stockfish): 1-0 {White mates}
+Started game 9 of 40 (07 vs stockfish)
+Finished game 4 (stockfish vs 07): 0-1 {Black mates}
+Started game 10 of 40 (stockfish vs 07)
+Finished game 5 (07 vs stockfish): 1-0 {White mates}
+Started game 11 of 40 (07 vs stockfish)
+Finished game 1 (07 vs stockfish): 1-0 {White mates}
+Started game 12 of 40 (stockfish vs 07)
+Finished game 7 (07 vs stockfish): 1-0 {White mates}
+Started game 13 of 40 (07 vs stockfish)
+Finished game 9 (07 vs stockfish): 1-0 {White mates}
+Started game 14 of 40 (stockfish vs 07)
+Finished game 8 (stockfish vs 07): 0-1 {Black mates}
+Started game 15 of 40 (07 vs stockfish)
+Finished game 10 (stockfish vs 07): 0-1 {Black mates}
+Started game 16 of 40 (stockfish vs 07)
+Finished game 14 (stockfish vs 07): 0-1 {Black mates}
+Started game 17 of 40 (07 vs stockfish)
+Finished game 11 (07 vs stockfish): 1-0 {White mates}
+Started game 18 of 40 (stockfish vs 07)
+Finished game 12 (stockfish vs 07): 0-1 {Black mates}
+Started game 19 of 40 (07 vs stockfish)
+Finished game 13 (07 vs stockfish): 1-0 {White mates}
+Started game 20 of 40 (stockfish vs 07)
+Finished game 15 (07 vs stockfish): 1-0 {White mates}
+Started game 21 of 40 (07 vs stockfish)
+Finished game 18 (stockfish vs 07): 0-1 {Black mates}
+Started game 22 of 40 (stockfish vs 07)
+Finished game 17 (07 vs stockfish): 0-1 {Black mates}
+Started game 23 of 40 (07 vs stockfish)
+Finished game 16 (stockfish vs 07): 0-1 {Black mates}
+Started game 24 of 40 (stockfish vs 07)
+Finished game 19 (07 vs stockfish): 1-0 {White mates}
+Started game 25 of 40 (07 vs stockfish)
+Finished game 20 (stockfish vs 07): 0-1 {Black mates}
+--------------------------------------------------
+Results of 07 vs stockfish (10+0.1, NULL - 1t, NULL - 16MB, 2moves_LT_1000.pgn):
+Elo: 511.50 +/- -nan, nElo: 737.02 +/- 152.27
+LOS: 100.00 %, DrawRatio: 10.00 %, PairsRatio: inf
+Games: 20, Wins: 19, Losses: 1, Draws: 0, Points: 19.0 (95.00 %)
+Ptnml(0-2): [0, 0, 1, 0, 9], WL/DD Ratio: inf
+--------------------------------------------------
+Started game 26 of 40 (stockfish vs 07)
+Finished game 21 (07 vs stockfish): 1-0 {White mates}
+Started game 27 of 40 (07 vs stockfish)
+Finished game 23 (07 vs stockfish): 1-0 {White mates}
+Started game 28 of 40 (stockfish vs 07)
+Finished game 24 (stockfish vs 07): 0-1 {Black mates}
+Started game 29 of 40 (07 vs stockfish)
+Finished game 22 (stockfish vs 07): 1-0 {White mates}
+Started game 30 of 40 (stockfish vs 07)
+Finished game 26 (stockfish vs 07): 0-1 {Black mates}
+Started game 31 of 40 (07 vs stockfish)
+Finished game 25 (07 vs stockfish): 1-0 {White mates}
+Started game 32 of 40 (stockfish vs 07)
+Finished game 27 (07 vs stockfish): 1-0 {White mates}
+Started game 33 of 40 (07 vs stockfish)
+Finished game 31 (07 vs stockfish): 1-0 {White mates}
+Started game 34 of 40 (stockfish vs 07)
+Finished game 29 (07 vs stockfish): 1-0 {White mates}
+Started game 35 of 40 (07 vs stockfish)
+Finished game 30 (stockfish vs 07): 0-1 {Black mates}
+Started game 36 of 40 (stockfish vs 07)
+Finished game 28 (stockfish vs 07): 0-1 {Black mates}
+Started game 37 of 40 (07 vs stockfish)
+Finished game 33 (07 vs stockfish): 1-0 {White mates}
+Started game 38 of 40 (stockfish vs 07)
+Finished game 32 (stockfish vs 07): 0-1 {Black mates}
+Started game 39 of 40 (07 vs stockfish)
+Finished game 34 (stockfish vs 07): 0-1 {Black mates}
+Started game 40 of 40 (stockfish vs 07)
+Finished game 35 (07 vs stockfish): 1-0 {White mates}
+Finished game 36 (stockfish vs 07): 0-1 {Black mates}
+Finished game 37 (07 vs stockfish): 1-0 {White mates}
+Finished game 39 (07 vs stockfish): 1-0 {White mates}
+Finished game 40 (stockfish vs 07): 0-1 {Black mates}
+--------------------------------------------------
+Results of 07 vs stockfish (10+0.1, NULL - 1t, NULL - 16MB, 2moves_LT_1000.pgn):
+Elo: 502.11 +/- -nan, nElo: 716.26 +/- 110.47
+LOS: 100.00 %, DrawRatio: 10.53 %, PairsRatio: inf
+Games: 38, Wins: 36, Losses: 2, Draws: 0, Points: 36.0 (94.74 %)
+Ptnml(0-2): [0, 0, 2, 0, 17], WL/DD Ratio: inf
+--------------------------------------------------
+Finished game 38 (stockfish vs 07): 0-1 {Black mates}
+--------------------------------------------------
+Results of 07 vs stockfish (10+0.1, NULL - 1t, NULL - 16MB, 2moves_LT_1000.pgn):
+Elo: 511.50 +/- -nan, nElo: 737.02 +/- 107.67
+LOS: 100.00 %, DrawRatio: 10.00 %, PairsRatio: inf
+Games: 40, Wins: 38, Losses: 2, Draws: 0, Points: 38.0 (95.00 %)
+Ptnml(0-2): [0, 0, 2, 0, 18], WL/DD Ratio: inf
+--------------------------------------------------
+Finished match
+Total Time: 00:02:34 (hours:minutes:seconds)
+
+
+
+
+===== Testing against Stockfish Skill Level 6 =====
+Started game 5 of 40 (07 vs stockfish)
+Started game 3 of 40 (07 vs stockfish)
+Started game 1 of 40 (07 vs stockfish)
+Started game 4 of 40 (stockfish vs 07)
+Started game 6 of 40 (stockfish vs 07)
+Started game 2 of 40 (stockfish vs 07)
+Finished game 6 (stockfish vs 07): 0-1 {Black mates}
+Started game 7 of 40 (07 vs stockfish)
+Finished game 3 (07 vs stockfish): 1-0 {White mates}
+Started game 8 of 40 (stockfish vs 07)
+Finished game 1 (07 vs stockfish): 1-0 {White mates}
+Started game 9 of 40 (07 vs stockfish)
+Finished game 4 (stockfish vs 07): 0-1 {Black mates}
+Started game 10 of 40 (stockfish vs 07)
+Finished game 2 (stockfish vs 07): 1-0 {White mates}
+Started game 11 of 40 (07 vs stockfish)
+Finished game 5 (07 vs stockfish): 1-0 {White mates}
+Started game 12 of 40 (stockfish vs 07)
+Finished game 8 (stockfish vs 07): 0-1 {Black mates}
+Started game 13 of 40 (07 vs stockfish)
+Finished game 9 (07 vs stockfish): 1-0 {White mates}
+Started game 14 of 40 (stockfish vs 07)
+Finished game 11 (07 vs stockfish): 1-0 {White mates}
+Started game 15 of 40 (07 vs stockfish)
+Finished game 10 (stockfish vs 07): 0-1 {Black mates}
+Started game 16 of 40 (stockfish vs 07)
+Finished game 7 (07 vs stockfish): 1-0 {White mates}
+Started game 17 of 40 (07 vs stockfish)
+Finished game 13 (07 vs stockfish): 1-0 {White mates}
+Started game 18 of 40 (stockfish vs 07)
+Finished game 14 (stockfish vs 07): 0-1 {Black mates}
+Started game 19 of 40 (07 vs stockfish)
+Finished game 15 (07 vs stockfish): 1-0 {White mates}
+Started game 20 of 40 (stockfish vs 07)
+Finished game 17 (07 vs stockfish): 1-0 {White mates}
+Started game 21 of 40 (07 vs stockfish)
+Finished game 12 (stockfish vs 07): 0-1 {Black mates}
+Started game 22 of 40 (stockfish vs 07)
+Finished game 16 (stockfish vs 07): 0-1 {Black mates}
+Started game 23 of 40 (07 vs stockfish)
+Finished game 18 (stockfish vs 07): 0-1 {Black mates}
+Started game 24 of 40 (stockfish vs 07)
+Finished game 19 (07 vs stockfish): 1-0 {White mates}
+Started game 25 of 40 (07 vs stockfish)
+Finished game 22 (stockfish vs 07): 0-1 {Black mates}
+Started game 26 of 40 (stockfish vs 07)
+Finished game 21 (07 vs stockfish): 1-0 {White mates}
+Started game 27 of 40 (07 vs stockfish)
+Finished game 20 (stockfish vs 07): 0-1 {Black mates}
+--------------------------------------------------
+Results of 07 vs stockfish (10+0.1, NULL - 1t, NULL - 16MB, 2moves_LT_1000.pgn):
+Elo: 528.89 +/- -nan, nElo: 776.89 +/- 145.18
+LOS: 100.00 %, DrawRatio: 9.09 %, PairsRatio: inf
+Games: 22, Wins: 21, Losses: 1, Draws: 0, Points: 21.0 (95.45 %)
+Ptnml(0-2): [0, 0, 1, 0, 10], WL/DD Ratio: inf
+--------------------------------------------------
+Started game 28 of 40 (stockfish vs 07)
+Finished game 23 (07 vs stockfish): 1-0 {White mates}
+Started game 29 of 40 (07 vs stockfish)
+Finished game 24 (stockfish vs 07): 0-1 {Black mates}
+Started game 30 of 40 (stockfish vs 07)
+Finished game 25 (07 vs stockfish): 1-0 {White mates}
+Started game 31 of 40 (07 vs stockfish)
+Finished game 26 (stockfish vs 07): 0-1 {Black mates}
+Started game 32 of 40 (stockfish vs 07)
+Finished game 28 (stockfish vs 07): 0-1 {Black mates}
+Started game 33 of 40 (07 vs stockfish)
+Finished game 27 (07 vs stockfish): 1-0 {White mates}
+Started game 34 of 40 (stockfish vs 07)
+Finished game 29 (07 vs stockfish): 1-0 {White mates}
+Started game 35 of 40 (07 vs stockfish)
+Finished game 30 (stockfish vs 07): 0-1 {Black mates}
+Started game 36 of 40 (stockfish vs 07)
+Finished game 32 (stockfish vs 07): 0-1 {Black mates}
+Started game 37 of 40 (07 vs stockfish)
+Finished game 31 (07 vs stockfish): 1-0 {White mates}
+Started game 38 of 40 (stockfish vs 07)
+Finished game 33 (07 vs stockfish): 1-0 {White mates}
+Started game 39 of 40 (07 vs stockfish)
+Finished game 35 (07 vs stockfish): 1-0 {White mates}
+Started game 40 of 40 (stockfish vs 07)
+Finished game 36 (stockfish vs 07): 0-1 {Black mates}
+Finished game 34 (stockfish vs 07): 0-1 {Black mates}
+Finished game 40 (stockfish vs 07): 0-1 {Black mates}
+Finished game 38 (stockfish vs 07): 0-1 {Black mates}
+Finished game 37 (07 vs stockfish): 1-0 {White mates}
+Finished game 39 (07 vs stockfish): 1-0 {White mates}
+--------------------------------------------------
+Results of 07 vs stockfish (10+0.1, NULL - 1t, NULL - 16MB, 2moves_LT_1000.pgn):
+Elo: 636.43 +/- -nan, nElo: 1070.87 +/- 107.67
+LOS: 100.00 %, DrawRatio: 5.00 %, PairsRatio: inf
+Games: 40, Wins: 39, Losses: 1, Draws: 0, Points: 39.0 (97.50 %)
+Ptnml(0-2): [0, 0, 1, 0, 19], WL/DD Ratio: inf
+--------------------------------------------------
+Finished match
+Total Time: 00:02:43 (hours:minutes:seconds)
+
+
+
+
+===== Testing against Stockfish Skill Level 7 =====
+Started game 2 of 40 (stockfish vs 07)
+Started game 4 of 40 (stockfish vs 07)
+Started game 3 of 40 (07 vs stockfish)
+Started game 1 of 40 (07 vs stockfish)
+Started game 6 of 40 (stockfish vs 07)
+Started game 5 of 40 (07 vs stockfish)
+Finished game 3 (07 vs stockfish): 1-0 {White mates}
+Started game 7 of 40 (07 vs stockfish)
+Finished game 2 (stockfish vs 07): 0-1 {Black mates}
+Started game 8 of 40 (stockfish vs 07)
+Finished game 4 (stockfish vs 07): 0-1 {Black mates}
+Started game 9 of 40 (07 vs stockfish)
+Finished game 6 (stockfish vs 07): 0-1 {Black mates}
+Started game 10 of 40 (stockfish vs 07)
+Finished game 1 (07 vs stockfish): 1-0 {White mates}
+Started game 11 of 40 (07 vs stockfish)
+Finished game 5 (07 vs stockfish): 1-0 {White mates}
+Started game 12 of 40 (stockfish vs 07)
+Finished game 7 (07 vs stockfish): 1-0 {White mates}
+Started game 13 of 40 (07 vs stockfish)
+Finished game 9 (07 vs stockfish): 1-0 {White mates}
+Started game 14 of 40 (stockfish vs 07)
+Finished game 11 (07 vs stockfish): 1-0 {White mates}
+Started game 15 of 40 (07 vs stockfish)
+Finished game 8 (stockfish vs 07): 0-1 {Black mates}
+Started game 16 of 40 (stockfish vs 07)
+Finished game 10 (stockfish vs 07): 0-1 {Black mates}
+Started game 17 of 40 (07 vs stockfish)
+Finished game 13 (07 vs stockfish): 1-0 {White mates}
+Started game 18 of 40 (stockfish vs 07)
+Finished game 12 (stockfish vs 07): 0-1 {Black mates}
+Started game 19 of 40 (07 vs stockfish)
+Finished game 14 (stockfish vs 07): 0-1 {Black mates}
+Started game 20 of 40 (stockfish vs 07)
+Finished game 15 (07 vs stockfish): 1-0 {White mates}
+Started game 21 of 40 (07 vs stockfish)
+Finished game 16 (stockfish vs 07): 0-1 {Black mates}
+Started game 22 of 40 (stockfish vs 07)
+Finished game 17 (07 vs stockfish): 1-0 {White mates}
+Started game 23 of 40 (07 vs stockfish)
+Finished game 18 (stockfish vs 07): 1-0 {White mates}
+Started game 24 of 40 (stockfish vs 07)
+Finished game 19 (07 vs stockfish): 1-0 {White mates}
+Started game 25 of 40 (07 vs stockfish)
+Finished game 20 (stockfish vs 07): 0-1 {Black mates}
+--------------------------------------------------
+Results of 07 vs stockfish (10+0.1, NULL - 1t, NULL - 16MB, 2moves_LT_1000.pgn):
+Elo: 511.50 +/- -nan, nElo: 737.02 +/- 152.27
+LOS: 100.00 %, DrawRatio: 10.00 %, PairsRatio: inf
+Games: 20, Wins: 19, Losses: 1, Draws: 0, Points: 19.0 (95.00 %)
+Ptnml(0-2): [0, 0, 1, 0, 9], WL/DD Ratio: inf
+--------------------------------------------------
+Started game 26 of 40 (stockfish vs 07)
+Finished game 22 (stockfish vs 07): 0-1 {Black mates}
+Started game 27 of 40 (07 vs stockfish)
+Finished game 21 (07 vs stockfish): 1-0 {White mates}
+Started game 28 of 40 (stockfish vs 07)
+Finished game 24 (stockfish vs 07): 0-1 {Black mates}
+Started game 29 of 40 (07 vs stockfish)
+Finished game 23 (07 vs stockfish): 0-1 {Black mates}
+Started game 30 of 40 (stockfish vs 07)
+Finished game 25 (07 vs stockfish): 1-0 {White mates}
+Started game 31 of 40 (07 vs stockfish)
+Finished game 26 (stockfish vs 07): 0-1 {Black mates}
+Started game 32 of 40 (stockfish vs 07)
+Finished game 27 (07 vs stockfish): 1-0 {White mates}
+Started game 33 of 40 (07 vs stockfish)
+Finished game 28 (stockfish vs 07): 0-1 {Black mates}
+Started game 34 of 40 (stockfish vs 07)
+Finished game 30 (stockfish vs 07): 0-1 {Black mates}
+Started game 35 of 40 (07 vs stockfish)
+Finished game 29 (07 vs stockfish): 1-0 {White mates}
+Started game 36 of 40 (stockfish vs 07)
+Finished game 31 (07 vs stockfish): 1-0 {White mates}
+Started game 37 of 40 (07 vs stockfish)
+Finished game 32 (stockfish vs 07): 0-1 {Black mates}
+Started game 38 of 40 (stockfish vs 07)
+Finished game 33 (07 vs stockfish): 1-0 {White mates}
+Started game 39 of 40 (07 vs stockfish)
+Finished game 35 (07 vs stockfish): 1-0 {White mates}
+Started game 40 of 40 (stockfish vs 07)
+Finished game 34 (stockfish vs 07): 0-1 {Black mates}
+Finished game 36 (stockfish vs 07): 0-1 {Black mates}
+Finished game 39 (07 vs stockfish): 1-0 {White mates}
+Finished game 38 (stockfish vs 07): 0-1 {Black mates}
+Finished game 40 (stockfish vs 07): 0-1 {Black mates}
+--------------------------------------------------
+Results of 07 vs stockfish (10+0.1, NULL - 1t, NULL - 16MB, 2moves_LT_1000.pgn):
+Elo: 502.11 +/- -nan, nElo: 716.26 +/- 110.47
+LOS: 100.00 %, DrawRatio: 10.53 %, PairsRatio: inf
+Games: 38, Wins: 36, Losses: 2, Draws: 0, Points: 36.0 (94.74 %)
+Ptnml(0-2): [0, 0, 2, 0, 17], WL/DD Ratio: inf
+--------------------------------------------------
+Finished game 37 (07 vs stockfish): 1-0 {White mates}
+--------------------------------------------------
+Results of 07 vs stockfish (10+0.1, NULL - 1t, NULL - 16MB, 2moves_LT_1000.pgn):
+Elo: 511.50 +/- -nan, nElo: 737.02 +/- 107.67
+LOS: 100.00 %, DrawRatio: 10.00 %, PairsRatio: inf
+Games: 40, Wins: 38, Losses: 2, Draws: 0, Points: 38.0 (95.00 %)
+Ptnml(0-2): [0, 0, 2, 0, 18], WL/DD Ratio: inf
+--------------------------------------------------
+Finished match
+Total Time: 00:02:46 (hours:minutes:seconds)
+
+
+
+
+===== Testing against Stockfish Skill Level 8 =====
+Started game 2 of 40 (stockfish vs 07)
+Started game 1 of 40 (07 vs stockfish)
+Started game 3 of 40 (07 vs stockfish)
+Started game 4 of 40 (stockfish vs 07)
+Started game 6 of 40 (stockfish vs 07)
+Started game 5 of 40 (07 vs stockfish)
