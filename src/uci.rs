@@ -23,7 +23,7 @@ enum CommandIncoming {
     Stop,
     // PonderHit,
     Quit,
-    Perft(String),
+    // Perft(String),
     Unknown(String), // We have recieved some invalid or unsupported command.
 }
 
@@ -78,7 +78,6 @@ impl UciInterface {
                 Go(cmd) => self.go(cmd.as_str()),
                 Stop => self.stop(),
                 Quit => break,
-                Perft(cmd) => self.perft(cmd.as_str()),
                 Unknown(line) => println!("Unknown: {}", line),
             }
         }
@@ -147,7 +146,7 @@ impl UciInterface {
         // Skip the 'moves' word if it exists.
         iter.next();
 
-        self.engine = Engine::from_fen_and_moves(fen.as_str(), iter);
+        self.engine.set_position(fen.as_str(), iter);
     }
 
     fn go(&mut self, cmd: &str) {
@@ -199,14 +198,4 @@ impl UciInterface {
     }
 
     fn stop(&mut self) {}
-
-    fn perft(&mut self, cmd: &str) {
-        let depth: i32 = match cmd.parse::<i32>() {
-            Ok(value) => value,
-            Err(err) => {
-                println!("info string Unsupported depth {}.", err);
-                return;
-            }
-        };
-    }
 }

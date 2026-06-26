@@ -9,10 +9,11 @@ use std::str::SplitWhitespace;
 use std::time::Duration;
 
 const INF: i32 = 10_000_000;
-const MATE_SCORE: i32 = 100_000;
+pub const MATE_SCORE: i32 = 100_000;
 const DRAW_SCORE: i32 = 0;
 // Checking time limit every 1024 nodes.
 const TIME_OUT_CHECK_FREQUENCY: u64 = 1024;
+pub const MAX_DEPTH: u8 = 64;
 
 pub struct Engine {
     pub debug: bool,
@@ -24,8 +25,12 @@ pub struct Engine {
     time_limit: Duration,
     start_time: std::time::Instant,
     search_data: SearchData,
+    #[cfg(feature = "dev")]
+    dev_stats: DevStats,
 }
 
+// --- Search Data --- //
+// This stores data needed for each iteration of the iterative deepening.
 struct SearchData {
     // Basics:
     is_time_over: bool,
@@ -52,40 +57,42 @@ impl Default for SearchData {
     }
 }
 
+// --- Search Stats --- //
+// Stores statistics about the search for `info`.
+#[derive(Default)]
 struct SearchStats {
     nodes: u64,
     q_nodes: u64,
 }
 
-impl Default for SearchStats {
-    fn default() -> Self {
-        Self {
-            nodes: 0,
-            q_nodes: 0,
-        }
+// --- Additional Development Stats --- //
+// Like above but even more, usually disabled for perfomance reasons.
+#[cfg(feature = "dev")]
+#[derive(Default)]
+struct DevStats {
+    tt_prunes: u64,
+    beta_prunes: u64,
+    q_beta_prunes: u64,
+    limited_window_searched: u64,
+    limited_window_missed: u64,
+}
+
+#[cfg(feature = "dev")]
+impl DevStats {
+    fn print_info_string(&self) {
+        println!(
+            "info string tt-prunes: {}, beta-prunes: {}, q-beta-prunes: {}, limited_window_missed: {}",
+            self.tt_prunes, self.beta_prunes, self.q_beta_prunes, self.limited_window_missed
+        );
     }
 }
 
 // Various constructors and some house-keeping.
 impl Engine {
     pub fn from_default_pos() -> Engine {
-        Self::from_fen_and_moves(STARTING_POS, "".split_whitespace())
-    }
-
-    pub fn from_fen_and_moves(fen: &str, moves: SplitWhitespace) -> Engine {
+        let state = State::new_from_fen(STARTING_POS);
         let mut repetition_stack = Vec::with_capacity(100);
-
-        let mut state = State::new_from_fen(&fen);
         repetition_stack.push(state.zobrist_hash);
-
-        for move_str in moves {
-            let moove = Moove::from(move_str);
-            state = state.make_move(moove);
-            if state.half_move_clock == 0 {
-                repetition_stack.clear();
-            }
-            repetition_stack.push(state.zobrist_hash);
-        }
 
         Engine {
             debug: false,
@@ -97,7 +104,26 @@ impl Engine {
             time_limit: Duration::from_secs(0),
             start_time: std::time::Instant::now(),
             search_data: SearchData::default(),
+            #[cfg(feature = "dev")]
+            dev_stats: DevStats::default(),
         }
+    }
+
+    pub fn set_position(&mut self, fen: &str, moves: SplitWhitespace) {
+        let mut state = State::new_from_fen(&fen);
+        self.repetition_stack.clear();
+        self.repetition_stack.push(state.zobrist_hash);
+
+        for move_str in moves {
+            let moove = Moove::from(move_str);
+            state = state.make_move(moove);
+            if state.half_move_clock == 0 {
+                self.repetition_stack.clear();
+            }
+            self.repetition_stack.push(state.zobrist_hash);
+        }
+
+        self.state = state;
     }
 }
 
@@ -109,8 +135,12 @@ impl Engine {
         self.reset_for_new_search();
 
         // Iterative deepening.
-        for depth in 1..=64 {
+        for depth in 1..=MAX_DEPTH {
             self.search_data = SearchData::new(depth);
+            #[cfg(feature = "dev")]
+            {
+                self.dev_stats = DevStats::default();
+            }
             // Run the actual search!
             let search_start = std::time::Instant::now();
             let eval = self.search(0, -INF, INF);
@@ -118,24 +148,28 @@ impl Engine {
 
             // If the search did not properly finish...
             if self.search_data.is_time_over {
+                #[cfg(feature = "dev")]
+                println!("info string unfinished search took {:?}", search_duration);
                 break;
             }
 
             // Print an info string to the gui.
             println!(
-                "info depth {} q-depth {} nodes {} q-nodes {} score {} took {:?}",
+                "info depth {} q-depth {} nodes {} q-nodes {} score {} took {:.1}ms nps {:.0}",
                 depth,
                 self.search_data.selective_depth_reached,
                 self.stats.nodes,
                 self.stats.q_nodes,
                 eval,
-                search_duration
+                search_duration.as_millis() as f64,
+                (self.stats.nodes + self.stats.q_nodes) as f64 / search_duration.as_secs_f64()
             );
-            if self.debug {
-                println!(
-                    "info string repetition-stack-size {}",
-                    self.repetition_stack.len()
-                );
+            // Print even more info if dev is enabled.
+            #[cfg(feature = "dev")]
+            {
+                self.tt.print_info_string();
+                self.dev_stats.print_info_string();
+                println!("info string")
             }
 
             // Update the best move if the iteration finished before running out of time.
@@ -160,7 +194,8 @@ impl Engine {
             }
         }
 
-        if self.debug {
+        #[cfg(feature = "dev")]
+        {
             println!(
                 "info string time allocated: {:?}, time taken: {:?}",
                 self.time_limit,
@@ -183,12 +218,11 @@ impl Engine {
     // - TT Table
 
     // TODO: Next steps:
-    // - TT Table improvements,
-    // 1. try it for qsearch as well
-    // 2. try not storing fail high cases
-    // 3. add logging regardings its fullness etc
-    // Add nps to info lol
-    fn search(&mut self, current_depth: u8, mut alpha: i32, beta: i32) -> i32 {
+    // Further TT improvements?
+    // Print PV
+    // (Check) Extensions
+
+    fn search(&mut self, ply: u8, mut alpha: i32, beta: i32) -> i32 {
         if self.depth_out_of_time() {
             return DRAW_SCORE;
         }
@@ -200,26 +234,27 @@ impl Engine {
         }
 
         // --- Transposition Table Pruning ---
-        // This is needed later to determine the type of this node.
+        // The original_alpha and node_type are needed later to determine the type of this node.
         let original_alpha = alpha;
         let mut node_type = TTEntryType::Exact;
-        // Get TT entry
-        let tt_entry = self.tt.get_entry(self.state.zobrist_hash);
-        if self.debug && tt_entry.is_some() {
-            println!("info string tt hit")
-        }
-        // and prune if we can.
-        let remaining_depth = self.search_data.desired_search_depth - current_depth;
-        if self.tt.can_tt_prune(tt_entry, remaining_depth, alpha, beta) {
-            return tt_entry.unwrap().score;
+        // Prune if we can.
+        let is_pv = beta - alpha > 1;
+        let is_root = ply == 0;
+        let remaining_depth = self.search_data.desired_search_depth - ply;
+        if !is_root && let Some(score) =
+            self.tt
+                .can_tt_prune(self.state.zobrist_hash, ply, remaining_depth, alpha, beta, is_pv)
+        {
+            #[cfg(feature = "dev")]
+            {
+                self.dev_stats.tt_prunes += 1;
+            }
+            return score;
         }
 
         // --- Gen all legal moves. ---
-        // If we have a TT entry, use it.
-        let tt_move = match tt_entry {
-            None => None,
-            Some(entry) => Some(entry.recommended_move),
-        };
+        // Get TT move if it exists. 
+        let tt_move = self.tt.get_hash_move(self.state.zobrist_hash);
         // The tt_move will always be the first move of the search.
         let move_list = MoveList::new(&self.state, tt_move);
 
@@ -228,20 +263,21 @@ impl Engine {
         if move_list.is_empty() {
             return if self.state.is_in_check() {
                 // Mates that are further away are better.
-                -MATE_SCORE + current_depth as i32
+                -MATE_SCORE + ply as i32
             } else {
                 DRAW_SCORE
             };
         }
 
         // --- Evaluate the position whenever we reach a leaf node. ---
-        if current_depth == self.search_data.desired_search_depth {
-            return self.quiescence_search(current_depth, alpha, beta);
+        if ply == self.search_data.desired_search_depth {
+            return self.quiescence_search(ply, alpha, beta);
         };
 
         // For TT:
         // The best move for this node!
         let mut best_node_move: Moove = Moove::new(A1, A1);
+        let mut first_move = true;
         // --- Core Search over all moves ---
         let mut max_score = -INF;
         for mve in move_list {
@@ -254,7 +290,24 @@ impl Engine {
 
             // Step deeper into the search.
             self.repetition_stack.push(self.state.zobrist_hash);
-            let score = -self.search(current_depth + 1, -beta, -alpha);
+            let mut score;
+            // Full search for the first move to establish the PV.
+            if first_move {
+                score = -self.search(ply + 1, -beta, -alpha);
+                first_move = false;
+            } else {
+                // When we have a PV, search with a reduced window.
+                // This is because we assume that the move we searched first was indeed the best.
+                score = -self.search(ply + 1, -alpha - 1, -alpha);
+                #[cfg(feature = "dev")] { self.dev_stats.limited_window_searched += 1;}
+
+                // If the score is outside the expected window.
+                if score > alpha && is_pv {
+                    #[cfg(feature = "dev")] { self.dev_stats.limited_window_missed += 1;}
+                    // Search again with the full window.
+                    score = -self.search(ply + 1, -beta, -alpha);
+                }
+            }
             self.repetition_stack.pop();
             self.state = old_state;
 
@@ -264,7 +317,7 @@ impl Engine {
                 // Always update this for the TT table.
                 best_node_move = mve;
                 // Only keep the best move if it is the first move of the search.
-                if current_depth == 0 {
+                if ply == 0 {
                     self.search_data.best_move = Some(mve);
                 }
             }
@@ -276,35 +329,46 @@ impl Engine {
 
             // Alpha-beta cutoff.
             if score >= beta {
+                #[cfg(feature = "dev")]
+                {
+                    self.dev_stats.beta_prunes += 1;
+                }
                 node_type = TTEntryType::LowerBound;
                 break;
             }
         }
 
         // --- Update the transposition table ---
+        if max_score <= original_alpha {
+            // We have searched all moves but found no improvement on alpha.
+            node_type = TTEntryType::UpperBound;
+        } else if max_score < beta {
+            node_type = TTEntryType::Exact;
+        }
+
+        // TODO: node_type != TTEntryType::UpperBound &&
         if !self.search_data.is_time_over {
             self.tt.update_tt_table(
                 self.state.zobrist_hash,
                 max_score,
                 best_node_move,
                 remaining_depth,
-                original_alpha,
-                beta,
                 node_type,
+                ply
             );
         }
 
         max_score
     }
 
-    fn quiescence_search(&mut self, current_depth: u8, mut alpha: i32, beta: i32) -> i32 {
+    fn quiescence_search(&mut self, ply: u8, mut alpha: i32, beta: i32) -> i32 {
         if self.depth_out_of_time() {
             return DRAW_SCORE;
         }
 
         // Keep track of the selective depth for the info string.
         self.search_data.selective_depth_reached =
-            self.search_data.selective_depth_reached.max(current_depth);
+            self.search_data.selective_depth_reached.max(ply);
 
         let attack_list = MoveList::new_only_attacks(&self.state);
 
@@ -333,7 +397,7 @@ impl Engine {
             self.state = self.state.make_move(mve);
 
             // Step deeper into the search.
-            let score = -self.quiescence_search(current_depth + 1, -beta, -alpha);
+            let score = -self.quiescence_search(ply + 1, -beta, -alpha);
             self.state = old_state;
 
             // Update the max score.
@@ -346,6 +410,10 @@ impl Engine {
             }
             // Alpha-beta cutoff.
             if score >= beta {
+                #[cfg(feature = "dev")]
+                {
+                    self.dev_stats.q_beta_prunes += 1;
+                }
                 return max_score;
             }
         }
@@ -358,7 +426,11 @@ impl Engine {
 impl Engine {
     fn reset_for_new_search(&mut self) {
         self.best_move = None;
-        self.stats = SearchStats::default()
+        self.stats = SearchStats::default();
+        #[cfg(feature = "dev")]
+        {
+            self.dev_stats = DevStats::default();
+        }
     }
 
     fn is_out_of_time(&self) -> bool {
