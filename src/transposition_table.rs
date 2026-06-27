@@ -6,6 +6,8 @@ use mouse::moove::Moove;
 use crate::engine::{MATE_SCORE, MAX_DEPTH};
 
 const SIZE_OF_ENTRY_BYTES: usize = size_of::<TTEntry>();
+const BUCKET_LENGTH: usize = 2;
+
 #[derive(Clone, Eq, PartialEq, Debug, Copy)]
 pub enum TTEntryType {
     Exact,
@@ -21,6 +23,7 @@ pub struct TTEntry {
     pub score: i32,
     pub entry_type: TTEntryType,
     pub empty: bool,
+    pub generation: u16,
 }
 
 impl TTEntry {
@@ -30,6 +33,7 @@ impl TTEntry {
         depth: u8,
         score: i32,
         entry_type: TTEntryType,
+        generation: u16,
     ) -> Self {
         Self {
             zobrist_hash,
@@ -38,6 +42,7 @@ impl TTEntry {
             score,
             entry_type,
             empty: false,
+            generation,
         }
     }
 }
@@ -51,6 +56,7 @@ impl Default for TTEntry {
             score: 0,
             entry_type: TTEntryType::Exact,
             empty: true,
+            generation: 0,
         }
     }
 }
@@ -60,11 +66,11 @@ struct TTLogging {
     // The following variables are only used for some logging :)
     num_entries: usize,
     collisions: usize,
-    overwrites: usize,
-
     get_attempts: usize,
     get_hits: usize,
 }
+
+// Currently the TT follows a bucket design with 2 entries where the first entry prioritizes deep searches and the second one always get replaced.
 
 // Potential TT Table improvements
 // 4. try to have multiple buckets at each slot
@@ -72,104 +78,82 @@ struct TTLogging {
 // 2. try not to store fail high cases.
 // 3. 16 bit keys
 pub struct TranspositionTable {
-    tt: Vec<TTEntry>,
+    tt: Vec<[TTEntry; BUCKET_LENGTH]>,
+    generation: u16,
     #[cfg(feature = "dev")]
     log: TTLogging,
 }
 
 impl TranspositionTable {
-    // --- Constructors --- //
+    // --- Constructors and Basics --- //
     pub fn new() -> Self {
         // Default to a size of 64MB cause why not.
         Self::new_with_mb(64)
     }
 
     pub fn new_with_mb(mb: usize) -> Self {
-        let desired_len = (mb * 1000 * 1000) / SIZE_OF_ENTRY_BYTES;
+        let desired_len = (mb * 1000 * 1000) / (SIZE_OF_ENTRY_BYTES * BUCKET_LENGTH);
 
-        let tt = vec![TTEntry::default(); desired_len];
+        let tt = vec![[TTEntry::default(), TTEntry::default()]; desired_len];
         println!(
             "info string tt-len {}, tt-MB {} entry-B {}",
             tt.len(),
-            (tt.len() * SIZE_OF_ENTRY_BYTES) / 1000 / 1000,
+            (tt.len() * BUCKET_LENGTH * SIZE_OF_ENTRY_BYTES) / 1000 / 1000,
             SIZE_OF_ENTRY_BYTES
         );
+        let generation = 0;
         #[cfg(feature = "dev")]
         {
            let log = TTLogging {
                 num_entries: 0,
                 collisions: 0,
-                overwrites: 0,
                 get_attempts: 0,
                 get_hits: 0,
             };
-            Self { tt, log }
+            Self { tt, generation, log }
         }
         #[cfg(not(feature = "dev"))]
-        Self { tt }
+        Self { tt, generation }
     }
-
-    // --- Quick Helpers --- //
-    #[cfg(feature = "dev")]
-    pub fn print_info_string(&self) {
-        println!(
-            "info string fullness {:.2}%, collision {}, overwrites {}, get-hit {:.2}%",
-            (self.log.num_entries as f32 / self.tt.len() as f32) * 100.0,
-            self.log.collisions,
-            self.log.overwrites,
-            (self.log.get_hits as f32 / self.log.get_attempts as f32) * 100.0,
-        )
+    
+    pub fn next_generation(&mut self) {
+        self.generation = self.generation.wrapping_add(1);
     }
 
     fn get_index(&self, zobrist_hash: u64) -> usize {
         zobrist_hash as usize % self.tt.len()
     }
+    
+    fn get_entry(&mut self, zobrist_hash: u64) -> Option<TTEntry> {
+        let bucket = &self.tt[self.get_index(zobrist_hash)];
 
-    pub fn get_hash_move(&self, zobrist_hash: u64) -> Option<Moove> {
-        let index = self.get_index(zobrist_hash);
-        let entry = &self.tt[index];
+        for index in 0..BUCKET_LENGTH {
+            if bucket[index].empty || bucket[index].zobrist_hash != zobrist_hash {
+                continue;
+            }
+            return Some(bucket[index].clone())
+        }
 
-        if entry.empty {
-            return None;
-        }
-        if entry.zobrist_hash != zobrist_hash {
-            return None;
-        }
-        Some(entry.recommended_move)
+        None       
+    }
+    
+    #[cfg(feature = "dev")]
+    pub fn print_info_string(&self) {
+        println!(
+            "info string fullness {:.2}%, get-hit {:.2}%, collisions {}",
+            (self.log.num_entries as f32 / self.tt.len() as f32) * 100.0,
+            (self.log.get_hits as f32 / self.log.get_attempts as f32) * 100.0,
+            self.log.collisions,
+        )
     }
 
-    fn get_entry(&mut self, zobrist_hash: u64, ply: u8) -> Option<TTEntry> {
-        #[cfg(feature = "dev")]
-        {
-            self.log.get_attempts += 1;
-        }
-        let index = self.get_index(zobrist_hash);
-        let mut entry = self.tt[index].clone();
 
-        if entry.empty {
-            return None;
-        }
-        if entry.zobrist_hash != zobrist_hash {
-            return None;
-        }
+    // --- Core Features --- //
 
-        // Is this a mate?
-        if entry.score > MATE_SCORE - MAX_DEPTH as i32 {
-            // winning mate
-            entry.score -= ply as i32
-        } else if entry.score < -MATE_SCORE + MAX_DEPTH as i32 {
-            // losing mate
-            entry.score += ply as i32
-        }
-
-        #[cfg(feature = "dev")]
-        {
-            self.log.get_hits += 1;
-        }
-        Some(entry)
+    pub fn get_hash_move(&mut self, zobrist_hash: u64) -> Option<Moove> {
+        Some(self.get_entry(zobrist_hash)?.recommended_move)
     }
 
-    // --- Search Specific --- //
     pub fn can_tt_prune(
         &mut self,
         zobrist_hash: u64,
@@ -186,13 +170,19 @@ impl TranspositionTable {
         //     The entry type is EXACT
         //     The entry type is LOWER BOUND and greater than or equal to beta
         //     The entry type is UPPER BOUND and less than alpha
-        let tt_entry = self.get_entry(zobrist_hash, ply);
+        #[cfg(feature = "dev")] { self.log.get_attempts += 1; }
+        let mut tt_entry = self.get_entry(zobrist_hash)?;
+        #[cfg(feature = "dev")] { self.log.get_hits += 1; }
 
-        // If we have no entry, we can't prune.
-        let tt_entry = match tt_entry {
-            None => return None,
-            Some(tt_entry) => tt_entry,
-        };
+        // Adjust for mate distance!
+        // Is this a mate?
+        if tt_entry.score > MATE_SCORE - MAX_DEPTH as i32 {
+            // winning mate
+            tt_entry.score -= ply as i32
+        } else if tt_entry.score < -MATE_SCORE + MAX_DEPTH as i32 {
+            // losing mate
+            tt_entry.score += ply as i32
+        }
 
         let tt_score = tt_entry.score;
 
@@ -253,36 +243,62 @@ impl TranspositionTable {
             remaining_depth,
             max_score,
             node_type,
+            self.generation
         );
+        let bucket_index = self.get_index(entry.zobrist_hash);
+        let bucket = &mut self.tt[bucket_index];
 
-        let index = self.get_index(entry.zobrist_hash);
-        let old_entry = &self.tt[index];
-
-        // If there is no previous entry,
-        if old_entry.empty {
-            #[cfg(feature = "dev")]
-            {
-                self.log.num_entries += 1;
+        // --- Case 1: One of the entries is empty. --- //
+        for index in 0..BUCKET_LENGTH {
+            if bucket[index].empty {
+                #[cfg(feature = "dev")] { self.log.num_entries +=1; }
+                bucket[index] = entry;
+                return;
             }
-            // simply insert the entry.
-            self.tt[index] = entry;
-            return;
         }
 
-        // Otherwise, check if it's worth replacing.
-        // If the old entry is deeper, don't replace it.
-        #[cfg(feature = "dev")]
-        {
-            self.log.collisions += 1;
+        #[cfg(feature = "dev")] { self.log.collisions +=1; }
+        // --- Case 2: One of the entries is for the current position. --- //
+        for index in 0..BUCKET_LENGTH {
+            // In that case just replace it.
+            if bucket[index].zobrist_hash == zobrist_hash {
+                bucket[index] = entry;
+                return;
+            }
         }
-        if old_entry.zobrist_hash == entry.zobrist_hash && old_entry.depth > entry.depth {
-            return;
+
+        /*
+        // --- Case 3: Decide what to replace. --- //
+        let mut worst_index = 0;
+        let mut worst_score = i64::MAX;
+
+        for index in 0..BUCKET_LENGTH {
+            let cur_entry = &bucket[index];
+            let age = (self.generation - cur_entry.generation) as i64;
+            let score = cur_entry.depth as i64 - age; // Higher = better
+
+            if score < worst_score {
+                worst_score = score;
+                worst_index = index;
+            }
         }
-        // Otherwise, just overwrite it.
-        #[cfg(feature = "dev")]
-        {
-            self.log.overwrites += 1;
+
+        // Replace the worst entry (lowest depth, oldest)
+        bucket[worst_index] = entry;
+         */
+
+        // --- Case 3: Classic Depth-Preferred + Always-Replace --- //
+        // Slot 0: keeps the deepest entry. Slot 1: always overwritten.
+        let old_deep = &bucket[0];
+
+        // If the new entry is strictly deeper than slot 0, upgrade slot 0.
+        // Optionally, also replace slot 0 if it's extremely stale (> 3 generations old).
+        let age0 = self.generation.wrapping_sub(old_deep.generation);
+        if entry.depth > old_deep.depth || age0 > 3 {
+            bucket[0] = entry;
+        } else {
+            // Otherwise, dump the new entry into slot 1 (always replace).
+            bucket[1] = entry;
         }
-        self.tt[index] = entry;
     }
 }

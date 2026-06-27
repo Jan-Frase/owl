@@ -133,6 +133,7 @@ impl Engine {
         self.start_time = std::time::Instant::now();
         self.time_limit = time_limit;
         self.reset_for_new_search();
+        self.tt.next_generation();
 
         // Iterative deepening.
         for depth in 1..=MAX_DEPTH {
