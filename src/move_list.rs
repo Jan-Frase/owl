@@ -1,10 +1,18 @@
-use crate::simplified_eval::get_piece_value;
 use mouse::State;
 use mouse::moove::Moove;
-use mouse::piece::Piece::Pawn;
+use mouse::piece::Piece;
+use mouse::piece::Piece::*;
 
 const HASH_MOVE_BONUS: i16 = 30000;
 const CAPTURE_BONUS: i16 = 10000;
+
+// Piece Values:
+pub const PAWN_VALUE: i32 = 100;
+pub const KNIGHT_VALUE: i32 = 320;
+pub const BISHOP_VALUE: i32 = 330;
+pub const ROOK_VALUE: i32 = 500;
+pub const QUEEN_VALUE: i32 = 900;
+pub const KING_VALUE: i32 = 10000;
 
 pub struct MoveList {
     moves: Vec<Moove>,
@@ -67,8 +75,8 @@ impl MoveList {
 
         // MVV - LVA
         if let Some(defender) = defender {
-            let attacker_value = get_piece_value(attacker) as i16;
-            let defender_value = get_piece_value(defender) as i16;
+            let attacker_value = Self::get_piece_value(attacker) as i16;
+            let defender_value = Self::get_piece_value(defender) as i16;
             return CAPTURE_BONUS + defender_value - attacker_value;
         }
 
@@ -97,6 +105,17 @@ impl MoveList {
 
     pub(crate) fn is_empty(&self) -> bool {
         self.moves.is_empty()
+    }
+
+    fn get_piece_value(piece: Piece) -> i32 {
+        match piece {
+            Pawn => PAWN_VALUE,
+            Knight => KNIGHT_VALUE,
+            Bishop => BISHOP_VALUE,
+            Rook => ROOK_VALUE,
+            Queen => QUEEN_VALUE,
+            King => KING_VALUE,
+        }
     }
 }
 

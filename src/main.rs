@@ -2,7 +2,7 @@ use crate::uci::UciInterface;
 
 mod engine;
 mod move_list;
-mod simplified_eval;
+mod pesto_eval;
 mod transposition_table;
 mod uci;
 
