@@ -6,6 +6,7 @@ version, update, wins, losses, draws
 05, added better time control and quisence search, 370, 100, 30
 06, fixed missing node counting in q-search, 252, 193, 55
 07, added MVV-LVA move ordering, 404, 50, 46
-08.0, added transposition table, 352, 82, 66
-08.1, stopped clearing tt after every move and added null window search and added mate correction, 178, 145, 177
+08, added transposition table, 352, 82, 66
+09, stopped clearing tt after every move and added PVS and mate correction, 178, 145, 177
+10, added pesto eval, 264, 89, 147
 

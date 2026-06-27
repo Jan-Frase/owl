@@ -60,7 +60,7 @@
     },
     "config_name": "config.json",
     "output": 0,
-    "seed": 16741543368260569974,
+    "seed": 6118867157625783059,
     "variant": 0,
     "type": 0,
     "gauntlet_seeds": 1,
@@ -88,9 +88,9 @@
     },
     "engines": [
         {
-            "name": "08.1",
+            "name": "10",
             "dir": "",
-            "cmd": "../08.1",
+            "cmd": "../10",
             "args": "",
             "restart": false,
             "options": [],
@@ -108,9 +108,9 @@
             "variant": 0
         },
         {
-            "name": "stash-12",
+            "name": "stash-11",
             "dir": "",
-            "cmd": "stash-12",
+            "cmd": "stash-11",
             "args": "",
             "restart": false,
             "options": [],
@@ -129,16 +129,16 @@
         }
     ],
     "stats": {
-        "08.1 vs stash-12": {
-            "wins": 2,
-            "losses": 18,
-            "draws": 0,
-            "penta_WW": 0,
-            "penta_WD": 0,
-            "penta_WL": 2,
+        "10 vs stash-11": {
+            "wins": 13,
+            "losses": 22,
+            "draws": 5,
+            "penta_WW": 1,
+            "penta_WD": 2,
+            "penta_WL": 9,
             "penta_DD": 0,
-            "penta_LD": 0,
-            "penta_LL": 8
+            "penta_LD": 3,
+            "penta_LL": 5
         }
     }
 }
