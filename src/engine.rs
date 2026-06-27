@@ -291,6 +291,8 @@ impl Engine {
             // Step deeper into the search.
             self.repetition_stack.push(self.state.zobrist_hash);
             let mut score;
+
+            // --- Principal Variation Search ---
             // Full search for the first move to establish the PV.
             if first_move {
                 score = -self.search(ply + 1, -beta, -alpha);

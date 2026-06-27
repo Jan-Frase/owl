@@ -22,7 +22,7 @@
         "enabled": false
     },
     "opening": {
-        "file": "./Openings-PGN/2moves_LT_1000.pgn",
+        "file": "../Openings-PGN/2moves_LT_1000.pgn",
         "format": 1,
         "order": 1,
         "plies": -1,
@@ -60,12 +60,12 @@
     },
     "config_name": "config.json",
     "output": 0,
-    "seed": 15250686204522910041,
+    "seed": 16741543368260569974,
     "variant": 0,
     "type": 0,
     "gauntlet_seeds": 1,
     "ratinginterval": 10,
-    "scoreinterval": 1,
+    "scoreinterval": 10,
     "wait": 0,
     "autosaveinterval": 20,
     "games": 2,
@@ -108,9 +108,9 @@
             "variant": 0
         },
         {
-            "name": "stash-17",
+            "name": "stash-12",
             "dir": "",
-            "cmd": "stash-17",
+            "cmd": "stash-12",
             "args": "",
             "restart": false,
             "options": [],
@@ -129,16 +129,16 @@
         }
     ],
     "stats": {
-        "08.1 vs stash-17": {
-            "wins": 0,
-            "losses": 0,
+        "08.1 vs stash-12": {
+            "wins": 2,
+            "losses": 18,
             "draws": 0,
             "penta_WW": 0,
             "penta_WD": 0,
-            "penta_WL": 0,
+            "penta_WL": 2,
             "penta_DD": 0,
             "penta_LD": 0,
-            "penta_LL": 0
+            "penta_LL": 8
         }
     }
 }
