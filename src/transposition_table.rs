@@ -282,7 +282,14 @@ impl TranspositionTable {
             }
         }
 
+        /*
+        TODO: Only replace if the new entry is better?
+        let score = entry.depth as i64 - (self.generation - entry.generation) as i64;
         // Replace the worst entry (lowest depth, oldest)
+        if score > worst_score {
+            bucket[worst_index] = entry;
+        }
+         */
         bucket[worst_index] = entry;
     }
 }
