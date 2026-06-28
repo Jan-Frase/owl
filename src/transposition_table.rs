@@ -73,10 +73,10 @@ struct TTLogging {
 // Currently the TT follows a bucket design with 2 entries where the first entry prioritizes deep searches and the second one always get replaced.
 
 // Potential TT Table improvements
-// 4. try to have multiple buckets at each slot
 // 1. try it for q-search as well.
 // 2. try not to store fail high cases.
 // 3. 16 bit keys
+// 4. Bitmap the entries to compress them.
 pub struct TranspositionTable {
     tt: Vec<[TTEntry; BUCKET_LENGTH]>,
     generation: u16,
@@ -141,7 +141,7 @@ impl TranspositionTable {
     pub fn print_info_string(&self) {
         println!(
             "info string fullness {:.2}%, get-hit {:.2}%, collisions {}",
-            (self.log.num_entries as f32 / self.tt.len() as f32) * 100.0,
+            (self.log.num_entries as f32 / (self.tt.len() * BUCKET_LENGTH) as f32) * 100.0,
             (self.log.get_hits as f32 / self.log.get_attempts as f32) * 100.0,
             self.log.collisions,
         )
@@ -267,8 +267,7 @@ impl TranspositionTable {
             }
         }
 
-        /*
-        // --- Case 3: Decide what to replace. --- //
+        // --- Case 3: Decide what to replace based on a score. --- //
         let mut worst_index = 0;
         let mut worst_score = i64::MAX;
 
@@ -285,20 +284,5 @@ impl TranspositionTable {
 
         // Replace the worst entry (lowest depth, oldest)
         bucket[worst_index] = entry;
-         */
-
-        // --- Case 3: Classic Depth-Preferred + Always-Replace --- //
-        // Slot 0: keeps the deepest entry. Slot 1: always overwritten.
-        let old_deep = &bucket[0];
-
-        // If the new entry is strictly deeper than slot 0, upgrade slot 0.
-        // Optionally, also replace slot 0 if it's extremely stale (> 3 generations old).
-        let age0 = self.generation.wrapping_sub(old_deep.generation);
-        if entry.depth > old_deep.depth || age0 > 3 {
-            bucket[0] = entry;
-        } else {
-            // Otherwise, dump the new entry into slot 1 (always replace).
-            bucket[1] = entry;
-        }
     }
 }

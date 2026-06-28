@@ -60,7 +60,7 @@
     },
     "config_name": "config.json",
     "output": 0,
-    "seed": 15250686204522910041,
+    "seed": 12685942449079896920,
     "variant": 0,
     "type": 0,
     "gauntlet_seeds": 1,
@@ -69,7 +69,7 @@
     "wait": 0,
     "autosaveinterval": 20,
     "games": 2,
-    "rounds": 20,
+    "rounds": 250,
     "concurrency": 6,
     "force_concurrency": false,
     "recover": false,
@@ -88,9 +88,9 @@
     },
     "engines": [
         {
-            "name": "08.1",
+            "name": "11.2",
             "dir": "",
-            "cmd": "../08.1",
+            "cmd": "./11.2",
             "args": "",
             "restart": false,
             "options": [],
@@ -108,9 +108,9 @@
             "variant": 0
         },
         {
-            "name": "stash-17",
+            "name": "10",
             "dir": "",
-            "cmd": "stash-17",
+            "cmd": "./10",
             "args": "",
             "restart": false,
             "options": [],
@@ -129,16 +129,16 @@
         }
     ],
     "stats": {
-        "08.1 vs stash-17": {
-            "wins": 0,
-            "losses": 0,
-            "draws": 0,
-            "penta_WW": 0,
-            "penta_WD": 0,
-            "penta_WL": 0,
-            "penta_DD": 0,
-            "penta_LD": 0,
-            "penta_LL": 0
+        "11.2 vs 10": {
+            "wins": 151,
+            "losses": 147,
+            "draws": 202,
+            "penta_WW": 19,
+            "penta_WD": 62,
+            "penta_WL": 51,
+            "penta_DD": 42,
+            "penta_LD": 56,
+            "penta_LL": 20
         }
     }
 }

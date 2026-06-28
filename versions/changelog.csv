@@ -9,4 +9,5 @@ version, update, wins, losses, draws
 08, added transposition table, 352, 82, 66
 09, stopped clearing tt after every move and added PVS and mate correction, 178, 145, 177
 10, added pesto eval, 264, 89, 147
+11, added a two bucket system to TT with score replacement (totally within the margin of error btw), 151, 147, 202
 
