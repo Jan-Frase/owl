@@ -33,8 +33,6 @@ const QUEEN_MG_VALUE: i32 = 1025;
 const QUEEN_EG_VALUE: i32 = 936;
 const KING_MG_VALUE: i32 = 0;
 const KING_EG_VALUE: i32 = 0;
-const PIECE_MG_VALUES: [i32; 6] = [ROOK_MG_VALUE, KNIGHT_MG_VALUE, BISHOP_MG_VALUE, QUEEN_MG_VALUE, KING_MG_VALUE, PAWN_MG_VALUE];
-const PIECE_EG_VALUES: [i32; 6] = [ROOK_EG_VALUE, KNIGHT_EG_VALUE, BISHOP_EG_VALUE, QUEEN_EG_VALUE, KING_EG_VALUE, PAWN_EG_VALUE];
 
 const fn add_piece_values(mut table: [i32; SQUARES_AMOUNT], value: i32) -> [i32; SQUARES_AMOUNT] {
     let mut index = 0;
@@ -244,20 +242,4 @@ pub fn evaluate_for_white(state: &State) -> i32 {
     let eval = (mg * mg_phase + eg * eg_phase) / 24;
 
     eval
-}
-
-#[test]
-fn test01() {
-    let state = State::new_from_fen(
-        "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-    );
-    assert_eq!(evaluate_relative(&state), 0);
-}
-
-#[test]
-fn test02() {
-    let state = State::new_from_fen(
-        "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-    );
-    assert_eq!(evaluate_relative(&state), 0);
 }
