@@ -1,6 +1,7 @@
 // UCI Interface implementation based on:
 // https://gist.github.com/DOBRO/2592c6dad754ba67e6dcaec8c90165bf
 
+use std::cmp::min;
 use crate::engine::Engine;
 use crate::uci::CommandIncoming::*;
 use mouse::backend::constants::STARTING_POS;
@@ -175,26 +176,36 @@ impl UciInterface {
             }
         }
 
-        let mut time_limit = movetime.unwrap_or(0);
-
-        if movetime.is_none() {
-            // Use the basic Time Management formula from:
-            // https://www.chessprogramming.org/Time_Management
-            // Either using the given movestogo or the default value of 25.
-            let movestogo = movestogo.unwrap_or(25);
-
-            let (our_time, our_inc) = match self.engine.state.active_side {
-                Side::White => (wtime.unwrap(), winc.unwrap()),
-                Side::Black => (btime.unwrap(), binc.unwrap()),
-            };
-
-            time_limit = our_time / movestogo + our_inc;
-        }
-        let time_limit = Duration::from_millis(time_limit as u64);
+        let (soft_limit, hard_limit) = self.calc_time_allotment(movetime, wtime, winc, btime, binc);
 
         // Start search
-        let moove = self.engine.search_start(time_limit);
+        let moove = self.engine.search_start(soft_limit, hard_limit);
         println!("bestmove {}", moove.to_string())
+    }
+
+    fn calc_time_allotment(&self, move_time: Option<u32>, wtime: Option<u32>, winc: Option<u32>, btime: Option<u32>, binc: Option<u32>) -> (Duration, Duration) {
+        if let Some(move_time) = move_time {
+            let limit = Duration::from_millis(move_time as u64);
+            return (limit, limit);
+        }
+
+        // Use the basic Time Management formula from:
+        // https://www.chessprogramming.org/Time_Management
+        let (our_time, our_inc) = match self.engine.state.active_side {
+            Side::White => (wtime.unwrap(), winc.unwrap()),
+            Side::Black => (btime.unwrap(), binc.unwrap()),
+        };
+
+        let our_time: f64 = our_time as f64;
+        let our_inc: f64 = our_inc as f64;
+        let movestogo: f64 = 80.0;
+
+        let soft_limit = our_time / movestogo + our_inc ;
+        let hard_limit = (soft_limit * 2.0).min(our_time * 0.5 + our_inc);
+        let soft_limit = Duration::from_millis(soft_limit as u64);
+        let hard_limit = Duration::from_millis(hard_limit as u64);
+
+        (soft_limit, hard_limit)
     }
 
     fn stop(&mut self) {}

@@ -22,7 +22,8 @@ pub struct Engine {
     best_move: Option<Moove>,
     stats: SearchStats,
     repetition_stack: Vec<u64>,
-    time_limit: Duration,
+    /// One this duration has passed the search must be stopped.
+    hard_time_limit: Duration,
     start_time: std::time::Instant,
     search_data: SearchData,
     #[cfg(feature = "dev")]
@@ -33,7 +34,7 @@ pub struct Engine {
 // This stores data needed for each iteration of the iterative deepening.
 struct SearchData {
     // Basics:
-    is_time_over: bool,
+    is_past_hard_limit: bool,
     desired_search_depth: u8,
     best_move: Option<Moove>,
     // For quiescence search logging:
@@ -43,7 +44,7 @@ struct SearchData {
 impl SearchData {
     fn new(desired_search_depth: u8) -> Self {
         Self {
-            is_time_over: false,
+            is_past_hard_limit: false,
             desired_search_depth,
             selective_depth_reached: 0,
             best_move: None,
@@ -75,15 +76,24 @@ struct DevStats {
     q_beta_prunes: u64,
     limited_window_searched: u64,
     limited_window_missed: u64,
+    iterations_cancelled: u64,
 }
 
 #[cfg(feature = "dev")]
 impl DevStats {
     fn print_info_string(&self) {
         println!(
-            "info string tt-prunes: {}, beta-prunes: {}, q-beta-prunes: {}, limited_window_missed: {}",
-            self.tt_prunes, self.beta_prunes, self.q_beta_prunes, self.limited_window_missed
+            "info string tt-prunes: {}, beta-prunes: {}, q-beta-prunes: {}, window_missed: {}, iterations_cancelled: {}",
+            self.tt_prunes, self.beta_prunes, self.q_beta_prunes, self.limited_window_missed, self.iterations_cancelled
         );
+    }
+
+    fn reset(&mut self) {
+        self.tt_prunes = 0;
+        self.beta_prunes = 0;
+        self.q_beta_prunes = 0;
+        self.limited_window_searched = 0;
+        self.limited_window_missed = 0;
     }
 }
 
@@ -101,7 +111,7 @@ impl Engine {
             best_move: None,
             stats: SearchStats::default(),
             repetition_stack,
-            time_limit: Duration::from_secs(0),
+            hard_time_limit: Duration::from_secs(0),
             start_time: std::time::Instant::now(),
             search_data: SearchData::default(),
             #[cfg(feature = "dev")]
@@ -129,28 +139,29 @@ impl Engine {
 
 // The core of the engine.
 impl Engine {
-    pub fn search_start(&mut self, time_limit: Duration) -> Moove {
+    pub fn search_start(&mut self, soft_time_limit: Duration, hard_time_limit: Duration) -> Moove {
         self.start_time = std::time::Instant::now();
-        self.time_limit = time_limit;
+        self.hard_time_limit = hard_time_limit;
         self.reset_for_new_search();
         self.tt.next_generation();
 
+        #[cfg(feature = "dev")]
+        self.dev_stats.reset();
         // Iterative deepening.
         for depth in 1..=MAX_DEPTH {
             self.search_data = SearchData::new(depth);
-            #[cfg(feature = "dev")]
-            {
-                self.dev_stats = DevStats::default();
-            }
+
             // Run the actual search!
             let search_start = std::time::Instant::now();
             let eval = self.search(0, -INF, INF);
             let search_duration = search_start.elapsed();
 
             // If the search did not properly finish...
-            if self.search_data.is_time_over {
-                #[cfg(feature = "dev")]
-                println!("info string unfinished search took {:?}", search_duration);
+            if self.search_data.is_past_hard_limit {
+                #[cfg(feature = "dev")] {
+                    println!("info string unfinished search took {:?}", search_duration);
+                    self.dev_stats.iterations_cancelled += 1;
+                }
                 break;
             }
 
@@ -176,6 +187,7 @@ impl Engine {
             // Update the best move if the iteration finished before running out of time.
             self.best_move = self.search_data.best_move;
 
+            /*
             // Return if the current depth took more than we have remaining...
             let time_remaining = self.time_remaining();
             match time_remaining {
@@ -188,9 +200,10 @@ impl Engine {
                     }
                 }
             }
+             */
 
             // Return if we have no more time...
-            if self.is_out_of_time() {
+            if self.is_out_of_time(soft_time_limit) {
                 break;
             }
         }
@@ -198,8 +211,9 @@ impl Engine {
         #[cfg(feature = "dev")]
         {
             println!(
-                "info string time allocated: {:?}, time taken: {:?}",
-                self.time_limit,
+                "info string soft_time: {:?}, hard_time: {:?}, time taken: {:?}",
+                soft_time_limit,
+                self.hard_time_limit,
                 self.start_time.elapsed()
             );
         }
@@ -226,7 +240,7 @@ impl Engine {
     // Aspiration windows
 
     fn search(&mut self, ply: u8, mut alpha: i32, beta: i32) -> i32 {
-        if self.depth_out_of_time() {
+        if self.depth_out_of_hard_time() {
             return DRAW_SCORE;
         }
 
@@ -352,7 +366,7 @@ impl Engine {
         }
 
         // TODO: node_type != TTEntryType::UpperBound &&
-        if !self.search_data.is_time_over {
+        if !self.search_data.is_past_hard_limit {
             self.tt.update_tt_table(
                 self.state.zobrist_hash,
                 max_score,
@@ -367,7 +381,7 @@ impl Engine {
     }
 
     fn quiescence_search(&mut self, ply: u8, mut alpha: i32, beta: i32) -> i32 {
-        if self.depth_out_of_time() {
+        if self.depth_out_of_hard_time() {
             return DRAW_SCORE;
         }
 
@@ -438,12 +452,8 @@ impl Engine {
         }
     }
 
-    fn is_out_of_time(&self) -> bool {
-        self.start_time.elapsed() > self.time_limit
-    }
-
-    fn time_remaining(&self) -> Option<Duration> {
-        self.time_limit.checked_sub(self.start_time.elapsed())
+    fn is_out_of_time(&self, time_limit: Duration) -> bool {
+        self.start_time.elapsed() > time_limit
     }
 
     fn is_drawn(&self) -> bool {
@@ -490,14 +500,14 @@ impl Engine {
         false
     }
 
-    fn depth_out_of_time(&mut self) -> bool {
+    fn depth_out_of_hard_time(&mut self) -> bool {
         // If we are out of time, return 0.
-        if self.search_data.is_time_over {
+        if self.search_data.is_past_hard_limit {
             return true;
         }
         // Every 1024 nodes, check if we are out of time.
-        if self.stats.nodes % TIME_OUT_CHECK_FREQUENCY == 0 && self.is_out_of_time() {
-            self.search_data.is_time_over = true;
+        if self.stats.nodes % TIME_OUT_CHECK_FREQUENCY == 0 && self.is_out_of_time(self.hard_time_limit) {
+            self.search_data.is_past_hard_limit = true;
             return true;
         }
         false
