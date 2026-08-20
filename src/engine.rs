@@ -14,6 +14,7 @@ const DRAW_SCORE: i32 = 0;
 // Checking time limit every 1024 nodes.
 const TIME_OUT_CHECK_FREQUENCY: u64 = 1024;
 pub const MAX_DEPTH: u8 = 64;
+const ASPIRATION_WINDOW_INCREMENT: i32 = 5;
 
 pub struct Engine {
     pub debug: bool,
@@ -75,6 +76,7 @@ struct DevStats {
     q_beta_prunes: u64,
     limited_window_searched: u64,
     limited_window_missed: u64,
+    aspirations_missed: u64,
 }
 
 #[cfg(feature = "dev")]
@@ -135,16 +137,49 @@ impl Engine {
         self.reset_for_new_search();
         self.tt.next_generation();
 
+        // --- Aspiration Window Variables --- //
+        let mut first_iteration = true;
+        let mut previous_eval: i32 = 0;
+        let mut aspiration_window = ASPIRATION_WINDOW_INCREMENT;
+
+
+        #[cfg(feature = "dev")]
+        {
+            self.dev_stats = DevStats::default();
+        }
         // Iterative deepening.
         for depth in 1..=MAX_DEPTH {
             self.search_data = SearchData::new(depth);
-            #[cfg(feature = "dev")]
-            {
-                self.dev_stats = DevStats::default();
-            }
+
             // Run the actual search!
             let search_start = std::time::Instant::now();
-            let eval = self.search(0, -INF, INF);
+            match first_iteration{
+                true => {
+                    previous_eval = self.search(0, -INF, INF);
+                    first_iteration = false;
+                }
+                false => {
+                    loop {
+                        // TODO: Many more potential optimizations here.
+                        // Eg.: Try to only increase the bound the we failed and increase it exponentially.
+
+                        // Search with an optimistic bound.
+                        let alpha = previous_eval - aspiration_window;
+                        let beta = previous_eval + aspiration_window;
+                        // println!("info string aspiration -> previous_eval {}, alpha {}, beta: {}", previous_eval, alpha, beta);
+                        let eval = self.search(0, alpha, beta);
+
+                        previous_eval = eval;
+                        // If the eval is outside the optimistic bound, redo the search with a larger bound.
+                        if eval <= alpha || eval >= beta {
+                            // println!("info string aspiration window missed! eval: {}", eval);
+                            aspiration_window *= 2;
+                            continue;
+                        }
+                        break;
+                    }
+                }
+            }
             let search_duration = search_start.elapsed();
 
             // If the search did not properly finish...
@@ -161,7 +196,7 @@ impl Engine {
                 self.search_data.selective_depth_reached,
                 self.stats.nodes,
                 self.stats.q_nodes,
-                eval,
+                previous_eval,
                 search_duration.as_millis() as f64,
                 (self.stats.nodes + self.stats.q_nodes) as f64 / search_duration.as_secs_f64()
             );
@@ -204,8 +239,8 @@ impl Engine {
             );
         }
 
-        // If no iteration finished just return a random move...
-        self.best_move.unwrap_or(self.state.gen_moves()[0])
+        // If no iteration finished just crash...
+        self.best_move.unwrap()
     }
 
     // Recursive search function.
@@ -300,6 +335,13 @@ impl Engine {
             if first_move {
                 score = -self.search(ply + 1, -beta, -alpha);
                 first_move = false;
+                /*
+                // Skip the early return on a failing search for now.
+                // Its prolly better with but something is wrong.
+                if is_root && score <= alpha {
+                    return score;
+                }
+                 */
             } else {
                 // When we have a PV, search with a reduced window.
                 // This is because we assume that the move we searched first was indeed the best.
@@ -321,15 +363,16 @@ impl Engine {
                 max_score = score;
                 // Always update this for the TT table.
                 best_node_move = mve;
-                // Only keep the best move if it is the first move of the search.
-                if ply == 0 {
-                    self.search_data.best_move = Some(mve);
-                }
             }
 
             // If the score is better than the alpha value, update it.
             if score > alpha {
                 alpha = score;
+
+                // Only keep the best move if it is the first move of the search.
+                if is_root {
+                    self.search_data.best_move = Some(mve);
+                }
             }
 
             // Alpha-beta cutoff.

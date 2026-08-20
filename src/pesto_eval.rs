@@ -22,7 +22,7 @@ const PHASE_WEIGHTS: [i32; 6] = [ROOK_WEIGHT, KNIGHT_WEIGHT, BISHOP_WEIGHT, QUEE
 
 // Piece values
 const PAWN_MG_VALUE: i32 = 82;
-const PAWN_EG_VALUE: i32 = 94;
+pub const PAWN_EG_VALUE: i32 = 94;
 const KNIGHT_MG_VALUE: i32 = 337;
 const KNIGHT_EG_VALUE: i32 = 281;
 const BISHOP_MG_VALUE: i32 = 365;
